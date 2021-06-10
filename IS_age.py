@@ -49,7 +49,14 @@ def xi(N, tag):
 
 
 
-
+def make_samp(N,L):
+        randys = random.sample(list(range(N)), L)
+        def samp():
+                sampy = []
+                for _ in range(L):
+                        sampy.append(Package(1, t*L+_, [[randys[_]]]))
+                return sampy
+        return samp()
 
 
 
