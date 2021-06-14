@@ -1,6 +1,71 @@
 import numpy as np
 import random
 from Package import Package
+from Container import Container
+from Experiment import Experiment
+
+#######################
+# PACKAGE TESTS
+#######################
+
+# __init__
+# 1) Is the empty package what it's supposed to be?
+
+# 1.5) Initialize a non empty package of your choosing. 
+# 1.5a) Is is element wise equal to what it should be?
+
+
+# incorporate
+# 2) Let e denote the empty package. Let a be another package. 
+# 2a) Is a.incorporate(e) equal to a element wise? (YES)
+# 2b) Is a.incorporate(e) equal to a storage wise? (YES)
+
+# 3) Let b be another package. 
+# 3a) Is e.incorporate(b) equal to b storage wise? (NO)
+
+# 4) Let c and d be predetermined packages. 
+# 4a) Is c.incorporate(d) as expected?
+
+# 5) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''
+import numpy as np
+import random
+from Package import Package
+from Pitstop import Pitstop
+>>>>>>> 27f8957b49dec2888f1d73ab5f565c6e6b470a56
 
 # Components of special pitstops
 def z1(x):
@@ -92,3 +157,4 @@ for i in range(7):
 # Replace all the elements with pitstops
 
 # Randomly generate packages 
+'''
