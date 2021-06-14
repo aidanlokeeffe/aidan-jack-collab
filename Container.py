@@ -7,7 +7,7 @@ class Containter(object):
     def fill(self, t, load):
         # Get next batch of tags and injection nodes
         tags = iter( range(t*load, (t+1)*load) )
-        injection_nodes = sorted(random.choices(self.size, load))
+        injection_nodes = sorted(random.choices(range(self.size), k=load))
         
         # Inject the messages
         for j in injection_nodes:
@@ -38,9 +38,12 @@ class Containter(object):
     def IS_propogate(self, adj):
         buffer = []
         for pkg in self.contents:
-            buffer.append(pkg)
+            try:
+                buffer.append( Package(pkg[0], pkg[1]) )
+            except IndexError:
+                buffer.append( Package() )
         
-        # I have a feeling this will be buggy
+        # Propogate messages 
         for i in range(self.size):
             self.clear(i)
             for j in range(N):

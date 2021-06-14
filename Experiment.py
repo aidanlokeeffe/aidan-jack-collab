@@ -61,16 +61,84 @@ class Experiment(object):
             self.advance(t)
         return (self.state, self.attempted, self.actual, self.ages, self.deaths)
 
-    def read_adj(self, in_file)
-
-    def write_attempted(self, out_file, writer):
+    def read_adj(self, in_file):
         return None
 
-    def write_actual(self, out_file, writer):
+    # Output as a csv
+    def write_attempted_csv(self, out_name):
+        out_file = open(out_name, "w")
+
+        # Write top column
+        st = "Time, "
+        for n in range(self.N):
+            st += str(n) + ", "
+        out_file.write(st[:-2] + "\n")
+
+        # Write the rest of the data
+        for t in range(self.T):
+            st = str(t) + ", "
+            row = self.attempted[t]
+            for num in row:
+                st += str(num) + ", "
+            out_file.write(st[:-2] + "\n")
+        out_file.close()
         return None
 
-    def write_ages(self, out_file, writer):
+    def write_actual_csv(self, out_name):
+        out_file = open(out_name, "w")
+
+        # Write top column
+        st = "Time, "
+        for n in range(self.N):
+            st += str(n) + ", "
+        out_file.write(st[:-2] + "\n")
+
+        # Write the rest of the data
+        for t in range(self.T):
+            st = str(t) + ", "
+            row = self.actual[t]
+            for num in row:
+                st += str(num) + ", "
+            out_file.write(st[:-2] + "\n")
+        out_file.close()
         return None
 
-    def write_age_at_death(self, out_file, writer):
+    def write_ages_csv(self, out_name):
+        out_file = open(out_name, "w")
+
+        # Write top column
+        st = "Time, "
+        for n in range(self.N):
+            st += "Age at node " + str(n) + ", "
+        out_file.write(st[:-2] + "\n")
+
+        # Write the rest of the data
+        for t in range(self.T):
+            st = str(t) + ", "
+            row = self.actual[t]
+            for num in row:
+                st += str(num) + ", "
+            out_file.write(st[:-2] + "\n")
+        out_file.close()
+
+
+
+
+        return None
+
+
+    # This one is kinda hard. To avoid 
+    def write_age_at_death_csv(self, out_name):
+        return None
+
+    def write_attempted_m(self, out_name):
+        return None
+
+    def write_actual_m(self, out_name):
+        return None
+
+    def write_ages_m(self, out_name):
+        return None
+
+    def write_age_at_death_m(self, out_name):
         return None
