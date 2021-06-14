@@ -7,7 +7,7 @@ class Containter(object):
     def fill(self, t, load):
         # Get next batch of tags and injection nodes
         tags = iter( range(t*load, (t+1)*load) )
-        injection_nodes = sorted(random.sample(range(self.size, load)))
+        injection_nodes = sorted(random.choices(self.size, load))
         
         # Inject the messages
         for j in injection_nodes:
@@ -25,8 +25,14 @@ class Containter(object):
         for j in range(self.N):
             self.contents[j].incorporate(other.contents[j])
     
-    # Need to program this bleh
     def RW_propogate(self, adj):
+        #take each message
+            #how many outgoing edges go from this message's current node
+            #randomly select a node to go to
+            #send the message to that node
+        #inject new messages at load value 
+        #check to make sure that no collisions occured
+        #delete collided messages 
         return None
     
     def IS_propogate(self, adj):
