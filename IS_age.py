@@ -10,9 +10,16 @@ from Experiment import Experiment
 
 # __init__
 # 1) Is the empty package what it's supposed to be?
+a = Package()
+passed = len(a.vals[0])==0 and len(a.vals[1])==0
+print("TEST: Is the empty package actually empty? " + str(passed))
 
 # 1.5) Initialize a non empty package of your choosing. 
+b = Package([1], [[1,2]])
 # 1.5a) Is is element wise equal to what it should be?
+passed = (b.vals[0] == [1]) and (b.vals[1] == [[1,2]])
+print("TEST: Does package initialization seem to work? " + str(passed))
+
 
 
 # incorporate
@@ -26,13 +33,60 @@ from Experiment import Experiment
 # 4) Let c and d be predetermined packages. 
 # 4a) Is c.incorporate(d) as expected?
 
-# 5) 
+# clear 
+# 5) Make a new nonempty package. Clear it. Is it clear?
+
+# record
+# 6) Make a nonempty package. Tell it to record, say, 6. 
+# 6a) Did it record 6?
+
+# __str__
+# 7) Print the empty package. Is the representation correct?
+
+# 8) Print a nonempty package. Is the representation correct?
+
+# __repr__
+# 9) Repeat 7 but with __repr__
+
+# 10) Repeat 8 but with __repr__
+
+#######################
+# CONTAINER TESTS
+#######################
 
 
+#__init__
+# 11) Create a package of size 5, say. Are all of its components
+# empty?
 
+#fill
+# ???
 
+#clear
+# 14) Create a Container. Fill it. Clear it. Did it work?
 
+#record
+# 15) Create a Container. Fill it. Print the first component.
+# record some value, say 3. Print the first component again. 
+# Did it work?
 
+#incorporate
+# 2) Let e denote the empty package. Let a be another package. 
+# 2a) Is a.incorporate(e) equal to a element wise? (YES)
+# 2b) Is a.incorporate(e) equal to a storage wise? (YES)
+
+# 3) Let b be another package. 
+# 3a) Is e.incorporate(b) equal to b storage wise? (NO)
+
+# 4) Let c and d be predetermined packages. 
+# 4a) Is c.incorporate(d) as expected?
+
+#RW_propogate
+# )) ???
+
+#IS_propogate
+# )) Just work out an example by hand, then run the code
+# and see if it works properly
 
 
 

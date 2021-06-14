@@ -1,5 +1,5 @@
 import random
-class Containter(object):
+class Container(object):
     def __init__(self, N):
         self.contents = list(Package() for _ in range(N))
         self.size = N
