@@ -26,7 +26,7 @@ class Containter(object):
             self.contents[j].incorporate(other.contents[j])
     
     def RW_propogate(self, adj):
-        #take each message
+        #take each message 
             #how many outgoing edges go from this message's current node
             #randomly select a node to go to
             #send the message to that node
