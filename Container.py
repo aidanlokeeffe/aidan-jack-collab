@@ -7,6 +7,7 @@ class Containter(object):
     def fill(self, t, load):
         # Get next batch of tags and injection nodes
         tags = iter( range(t*load, (t+1)*load) )
+
         injection_nodes = sorted(random.choices(range(self.size), k=load))
         
         # Inject the messages
@@ -26,18 +27,24 @@ class Containter(object):
             self.contents[j].incorporate(other.contents[j])
     
     def RW_propogate(self, adj):
-        #take each message 
-            #how many outgoing edges go from this message's current node
+
+        #take each message
+        for pkg in self.contents:
+            #how many/which outgoing edges go from this message's current node
+            destinations = []
+            for matnav in range(self.size):
+                if adj[pkg.vals[1][0][-1]][matnav] > 0:
+                    destinations.append(matnav)
             #randomly select a node to go to
             #send the message to that node
-        #inject new messages at load value 
-        #check to make sure that no collisions occured
-        #delete collided messages 
+            pkg.vals[1][0].append(random.choice(destinations))
+
         return None
     
     def IS_propogate(self, adj):
         buffer = []
         for pkg in self.contents:
+
             try:
                 buffer.append( Package(pkg[0], pkg[1]) )
             except IndexError:
@@ -49,5 +56,7 @@ class Containter(object):
             for j in range(N):
                 if adj[i][j]:
                     self.contents[i].incorporate(buffer[j])
+#age is history length - 1
+
             
     
