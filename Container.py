@@ -1,7 +1,9 @@
 import random
+import Package
+
 class Container(object):
     def __init__(self, N):
-        self.contents = list(Package() for _ in range(N))
+        self.contents = list(Package([],[]) for _ in range(N))
         self.size = N
     
     def fill(self, t, load):
@@ -34,10 +36,10 @@ class Container(object):
             try:
                 buffer.append(Package(pkg[0],pkg[1]))
             except IndexError:
-                buffer.append(Package())
+                buffer.append(Package([],[]))
         #clear out all old contents to write in new state 
         for i in range(self.size):
-            self.contents[i]=Package()
+            self.contents[i]=Package([],[])
         #take each message
         for pkg in buffer:
             #how many/which outgoing edges go from this message's current node
@@ -61,7 +63,7 @@ class Container(object):
             try:
                 buffer.append( Package(pkg.vals[0], pkg.vals[1]) )
             except IndexError:
-                buffer.append( Package() )
+                buffer.append( Package([],[]) )
         
         # Propogate messages 
         for i in range(self.size):
@@ -70,6 +72,3 @@ class Container(object):
                 if adj[i][j]:
                     self.contents[i].incorporate(buffer[j])
 #age is history length - 1
-
-            
-    

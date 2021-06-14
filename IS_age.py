@@ -10,7 +10,7 @@ from Experiment import Experiment
 
 # __init__
 # 1) Is the empty package what it's supposed to be?
-a = Package()
+a = Package([],[])
 passed = len(a.vals[0])==0 and len(a.vals[1])==0
 print("TEST: Is the empty package actually empty? " + str(passed))
 
@@ -24,31 +24,74 @@ print("TEST: Does package initialization seem to work? " + str(passed))
 
 # incorporate
 # 2) Let e denote the empty package. Let a be another package. 
+e=Package([],[])
+a=Package([1],[[1,2,3]])
 # 2a) Is a.incorporate(e) equal to a element wise? (YES)
-# 2b) Is a.incorporate(e) equal to a storage wise? (YES)
+a.incorporate(e)
+passed = a.vals[0]==[1]
+passed2 = a.vals[1]==[[1,2,3]]
+print('Is a.incorporate(e) equal to a element wise? ' + str(passed) + str(passed2))
+# 2b) Is a.incorporate(e) equal to a memory wise? (YES)
+e=Package([],[])
+a=Package([1],[[1,2,3]])
+id_a = id(a)
+a.incorporate(e)
+passed = id_a == id(a)
+print('Is a.incorporate(e) equal to a memory wise?' + str(passed))
 
 # 3) Let b be another package. 
-# 3a) Is e.incorporate(b) equal to b storage wise? (NO)
+b=Package([43821], [[1,2,3,5,8,13]])
+e=Package([],[])
+# 3a) Is e.incorporate(b) equal to b memory wise? (NO)
+id_e = id(e)
+e.incorporate(b)
+passed = id_e == id(b)
+print('Is e.incorporate(b) equal to b memory wise? (NO)' + str(passed))
 
 # 4) Let c and d be predetermined packages. 
+c=Package([42069],[[420,69,23489214]])
+d=Package([127],[[2,4,6,8]])
 # 4a) Is c.incorporate(d) as expected?
-
+c.incorporate(d)
+passed = c.vals[0] == [42069,127]
+passed2 = c.vals[1] == [[420,69,23489214],[2,4,6,8]]
+print(' Is c.incorporate(d) as expected? ' +str(passed)+str(passed2))
 # clear 
 # 5) Make a new nonempty package. Clear it. Is it clear?
+packagey = Package([420],[[6,9]])
+packagey.clear()
+passed = len(packagey.vals[0])==0
+passed2 = len(packagey.vals[1])==0
+print('Make a new nonempty package. Clear it. Is it clear? ' + str(passed)+str(passed2))
 
 # record
 # 6) Make a nonempty package. Tell it to record, say, 6. 
 # 6a) Did it record 6?
+pack = Package([5],[[0,1,2,3,4,5]])
+pack.record(6)
+passed = pack.vals[1][0][-1]==6
+print('Did record record 6? ' + str(passed))
 
 # __str__
 # 7) Print the empty package. Is the representation correct?
-
+obama = Package([],[])
+fullpacky = Package([420],[[69]])
+passed = str(obama) == "[; []]"
+print('Print the empty package. Is the representation correct? ' + str(passed))
 # 8) Print a nonempty package. Is the representation correct?
+passed = str(fullpacky) == "[420; [69]]"
+print('Print a nonempty package. Is the representation correct? '+ str(passed))
 
 # __repr__
 # 9) Repeat 7 but with __repr__
+obama = Package([],[])
+fullpacky = Package([420],[[69]])
+passed = repr(obama) == "[; []]"
+print('Print the empty package. Is the representation correct? ' + str(passed))
 
 # 10) Repeat 8 but with __repr__
+passed = repr(fullpacky) == "[420; [69]]"
+print('Print a nonempty package. Is the representation correct? '+ str(passed))
 
 #######################
 # CONTAINER TESTS
@@ -56,8 +99,17 @@ print("TEST: Does package initialization seem to work? " + str(passed))
 
 
 #__init__
-# 11) Create a package of size 5, say. Are all of its components
+# 11) Create a container of size 5, say. Are all of its components
 # empty?
+cont = Container(5)
+booly = True
+while booly:
+	for i in range(5):
+		for j in range(2):
+			booly = cont.contents[i][j].isempty() & booly
+print('Create a container of size 5, say. Are all of its components empty? '+ str(booly))
+
+
 
 #fill
 # ???
