@@ -34,7 +34,7 @@ class Experiment(object):
     
     def advance(self, t):        
         # Propogate
-        self.propogate()
+        self.state.propogate(self.adj)
         
         # Add the new messages
         self.state.incorporate( Containter(self.N).fill(t, self.load) )
@@ -48,7 +48,7 @@ class Experiment(object):
             if len(self.state[j][0]) > 1:
                 # Seems overkill, but we need to deep copy those who die
                 doomed.append(Package( self.state[0], self.state[1] ))
-                self.clear(j)
+                self.state.clear(j)
         self.deaths.append(doomed)
         
         self.actual.append([len(self.state[j][0]) for j in range(self.N)])
