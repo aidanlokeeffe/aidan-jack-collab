@@ -1,7 +1,6 @@
 import numpy as np
 import random
 from Package import Package
-from Pitstop import Pitstop
 
 # Components of special pitstops
 def z1(x):
