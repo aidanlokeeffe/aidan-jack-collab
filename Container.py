@@ -79,7 +79,9 @@ class Container(object):
         # Propogate messages 
         for i in range(self.size):
             self.clear(i)
-            for j in range(N):
+            for j in range(self.size):
                 if adj[i][j]:
+                    to_incorp = Package( buffer[j][0], buffer[j][1] )
+                    to_incorp.record(i)
                     self.contents[i].incorporate(buffer[j])
 #age is history length - 1
