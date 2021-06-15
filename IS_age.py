@@ -39,6 +39,24 @@ a.incorporate(e)
 passed = id_a == id(a)
 print('Is a.incorporate(e) equal to a memory wise?' + str(passed))
 
+# A Question) Do the ids behave well if we repeatedly incorporate the same message
+recorder1 = Package([], [[1]])
+recorder2 = Package([], [[2]])
+recorders = [recorder1, recorder2]
+a = Package([1], [[1]])
+id_a = id(a)
+for i in range(10):
+	a.incorporate( recorders[i%2] )
+print("\nWe are testing iterated incorporation")
+print(a)
+print(id_a == id(a))
+print()
+
+
+
+
+
+
 # 3) Let b be another package. 
 b=Package([43821], [[1,2,3,5,8,13]])
 e=Package([],[])

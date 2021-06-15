@@ -81,7 +81,7 @@ class Container(object):
             self.clear(i)
             for j in range(self.size):
                 if adj[i][j]:
-                    to_incorp = Package( buffer[j][0], buffer[j][1] )
+                    to_incorp = Package( buffer[j].vals[0], buffer[j].vals[1] )
                     to_incorp.record(i)
-                    self.contents[i].incorporate(buffer[j])
+                    self.contents[i].incorporate(to_incorp)
 #age is history length - 1
