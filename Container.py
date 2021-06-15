@@ -1,10 +1,21 @@
 import random
-import Package
+from Package import Package
 
 class Container(object):
     def __init__(self, N):
-        self.contents = list(Package([],[]) for _ in range(N))
+        #self.contents = list(Package([],[]) for _ in range(N))
         self.size = N
+        
+        self.contents = []
+        for i in range(self.size):
+            self.contents.append( Package([],[]) )
+
+    def __str__(self):
+        st = "{"
+        for pkg in self.contents:
+            st += str(pkg) + ", "
+        st = st[:-2] + "}"
+        return st
     
     def fill(self, t, load):
         # Get next batch of tags and injection nodes
@@ -14,7 +25,7 @@ class Container(object):
         
         # Inject the messages
         for j in injection_nodes:
-            self.contents[j].combine(Package(tag = [next(tags)], hist = [[j]]))
+            self.contents[j].incorporate(Package(tag = [next(tags)], hist = [[j]]))
     
     # Do these methods actually make sense for their intended purposes?
     # Yes, because they are gonna be used in the matrix multiplicaiton
