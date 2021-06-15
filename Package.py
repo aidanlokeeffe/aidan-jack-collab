@@ -14,11 +14,13 @@ class Package(object):
         self.vals = [list(),list()]
         return None
     
+
+    # (!!!) We might not even need this function
     def record(self, j):
         # The empty package should not have a record
         if len(self.vals[0])==0:
             return None
-        self.vals[1][0].append(j)
+        self.vals[1][0] += [j]
         return None
         #cannot record when initializing because it will double the history of the first node. Only record when package moves
     
