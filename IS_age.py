@@ -142,17 +142,55 @@ print("Create a Container. Fill it. Clear it. Did it work? " + str(passed))
 # 15) Create a Container. Fill it. Print the first component.
 # record some value, say 3. Print the first component again. 
 # Did it work?
+#random.seed(8)
+#ctn = Container(4)
+#ctn.fill(0,2)
+#print(ctn.contents[0])
+#ctn.record(0)
+#print(ctn.contents[0])
 
 #incorporate
-# 2) Let e denote the empty package. Let a be another package. 
+# 2) Let e denote the empty container. Let a be another container. 
 # 2a) Is a.incorporate(e) equal to a element wise? (YES)
 # 2b) Is a.incorporate(e) equal to a storage wise? (YES)
+random.seed(8)
+e = Container(5)
+a = Container(5)
+a.fill(0,2)
+test1 = str(a)
+test3 = id(a)
+a.incorporate(e)
+test2=str(a)
+test4 = id(a)
+passed = test1 == test2
+print('Is a.incorporate(e) equal to a element wise? '+ str(passed))
+passed2 = test3 == test4
+print('Is a.incorporate(e) equal to a storage wise? '+ str(passed2))
+
 
 # 3) Let b be another package. 
 # 3a) Is e.incorporate(b) equal to b storage wise? (NO)
+b = Container(5)
+b.fill(0,3)
+test1 = id(b)
+e.incorporate(b)
+test2 = id(e)
+passed = test1 == test2
+print('Is e.incorporate(b) equal to b storage wise? (NO) '+ str(passed))
+
 
 # 4) Let c and d be predetermined packages. 
 # 4a) Is c.incorporate(d) as expected?
+random.seed(8)
+c = Container(6)
+d=Container(6)
+c.fill(0,4)
+print(c)
+d.fill(0,4)
+print(d)
+c.incorporate(d)
+print(c)
+print('yeet yes fam')
 
 #RW_propogate
 # )) ???

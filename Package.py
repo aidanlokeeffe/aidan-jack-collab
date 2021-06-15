@@ -20,6 +20,7 @@ class Package(object):
             return None
         self.vals[1][0].append(j)
         return None
+        #cannot record when initializing because it will double the history of the first node. Only record when package moves
     
     def __str__(self):
         st = "["
@@ -37,5 +38,4 @@ class Package(object):
     
     def __repr__(self):
         return str(self)
-
 

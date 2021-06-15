@@ -36,7 +36,7 @@ class Container(object):
         self.contents[j].record(j)
     
     def incorporate(self, other):
-        for j in range(self.N):
+        for j in range(self.size):
             self.contents[j].incorporate(other.contents[j])
     
     def RW_propogate(self, adj):
