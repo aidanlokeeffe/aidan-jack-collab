@@ -101,21 +101,42 @@ print('Print a nonempty package. Is the representation correct? '+ str(passed))
 #__init__
 # 11) Create a container of size 5, say. Are all of its components
 # empty?
+# FOCK
+
+'''
 cont = Container(5)
+
 booly = True
 while booly:
 	for i in range(5):
 		for j in range(2):
-			booly = cont.contents[i][j].isempty() & booly
+			booly = cont.contents[i][j].isempty() and booly
 print('Create a container of size 5, say. Are all of its components empty? '+ str(booly))
+'''
 
+ctn = Container(5)
 
+passed = True
+for i in range(5):
+	passed = passed and (ctn.contents[i].vals[0] == [])
+	passed = passed and (ctn.contents[i].vals[1] == [])
+	if not passed:
+		break
+print("Does container initialization work? " + str(passed))
+	
 
 #fill
-# ???
+random.seed(123456789)
+ctn = Container(6)
+ctn.fill(0, 3)
+passed = str(ctn) == "{[; []], [; []], [; []], [0,1; [3],[3]], [; []], [2; [5]]}"
+print("Does filling work as preditcted? " + str(passed))
 
 #clear
 # 14) Create a Container. Fill it. Clear it. Did it work?
+ctn.clear(3)
+passed = str(ctn) == "{[; []], [; []], [; []], [; []], [; []], [2; [5]]}"
+print("Create a Container. Fill it. Clear it. Did it work? " + str(passed))
 
 #record
 # 15) Create a Container. Fill it. Print the first component.
