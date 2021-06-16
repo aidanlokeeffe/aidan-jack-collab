@@ -1,15 +1,22 @@
+import numpy as np
+import math
+from Container import Container
+from Package import Package
+
 class Experiment(object):
     # Thought for next time: maybe adj should be a file name, and we
     # read it in like big boys
-    def __init__(self, adj, load, T, choice=0):
+    def __init__(self, fileName, load, T, choice=0):
         # Inputs
-        self.adj = adj
         self.load = load
         self.T = T
-        self.N = len(adj)
+        self.input_matrix(fileName)
+        self.choice = choice
+
         
         # Initialize dynamical variable
-        self.state = Container(self.N).fill(0, self.load)
+        self.state = Container(self.N)
+        self.state.fill(0, self.load)
         
         # Results
         self.attempted = []
@@ -19,11 +26,11 @@ class Experiment(object):
         
         # NOTE: THESE WILL BE UPDATED INSIDE OF THE FUNCTION COLLIDER, EXCEPT FOR AT TIME 0
         # This will always work for attempted
-        self.attempted.append( [len(self.state[j][0]) for j in range(self.N)] )
+        self.attempted.append( [len(self.state.contents[j].vals[0]) for j in range(self.N)] )
         # We need to apply collision first for this to work
-        self.actual.append([len(self.state[j][0]) for j in range(self.N)]) 
+        self.actual.append([len(self.state.contents[j].vals[0]) for j in range(self.N)]) 
         # This should also be computed only after collision
-        self.ages.append([len(self.state[j][1]) for j in range(self.N)])
+        self.ages.append([len(self.state.contents[j].vals[1]) for j in range(self.N)])
         # This will be an array of arrays of dead packages, with one inner array per timestep            
         self.deaths = [] 
         
@@ -32,9 +39,19 @@ class Experiment(object):
         else:
             self.propogate = self.state.IS_propogate
     
+    def input_matrix(self, inFile):
+        matrix = np.genfromtxt(inFile, delimiter = ',')
+        if math.isnan(matrix[0][0]):
+            matrix = matrix[1:,1:]
+        self.adj = matrix
+        self.N = len(matrix)
+        return None
+
     def advance(self, t):        
-        # Propogate
-        self.state.propogate(self.adj)
+        if self.choice==0:
+            self.state.RW_propogate(self.adj)
+        else:
+            self.state.IS_propogate(self.adj)
         
         # Add the new messages
         self.state.incorporate( Container(self.N).fill(t, self.load) )
@@ -142,3 +159,5 @@ class Experiment(object):
 
     def write_age_at_death_m(self, out_name):
         return None
+
+textExp = Experiment('testadjmat.csv', 2, 1)
