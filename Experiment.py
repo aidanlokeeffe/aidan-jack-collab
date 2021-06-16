@@ -9,7 +9,7 @@ class Experiment(object):
         self.N = len(adj)
         
         # Initialize dynamical variable
-        self.state = Containter(self.N).fill(0, self.load)
+        self.state = Container(self.N).fill(0, self.load)
         
         # Results
         self.attempted = []
@@ -37,7 +37,7 @@ class Experiment(object):
         self.state.propogate(self.adj)
         
         # Add the new messages
-        self.state.incorporate( Containter(self.N).fill(t, self.load) )
+        self.state.incorporate( Container(self.N).fill(t, self.load) )
         
         # Ready to record attempted activity
         self.attempted.append( [len(self.state[j][0]) for j in range(self.N)] )
