@@ -67,6 +67,7 @@ class Container(object):
             self.contents[j].incorporate(pkg) #or make a new package? deep
         return None
     
+    '''
     def IS_propogate(self, adj):
         buffer = []
         for pkg in self.contents:
@@ -84,4 +85,18 @@ class Container(object):
                     to_incorp = Package( buffer[j].vals[0], buffer[j].vals[1] )
                     to_incorp.record(i)
                     self.contents[i].incorporate(to_incorp)
+    '''
 #age is history length - 1
+
+    def IS_propogate(self, adj):
+        # First, we need a buffer to store the current state
+        buffer = []
+        for pkg in self.contents:
+            try:
+                buffer.append(Pacakge(pkg.vals[0], pkg.vals[1]))
+            except IndexError:
+                buffer.append(Package([],[]))
+
+        # Now, we update the entries in self.contents
+        # 
+
