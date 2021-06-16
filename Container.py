@@ -39,7 +39,7 @@ class Container(object):
         for j in range(self.size):
             self.contents[j].incorporate(other.contents[j])
     
-    def RW_propogate(self, adj):
+    def RW_propagate(self, adj):
         #take each message
         #deep copy contents into a buffer array
         buffer = []
@@ -66,29 +66,8 @@ class Container(object):
             j=pkg.vals[1][0][-1]
             self.contents[j].incorporate(pkg) #or make a new package? deep
         return None
-    
-    '''
-    def IS_propogate(self, adj):
-        buffer = []
-        for pkg in self.contents:
 
-            try:
-                buffer.append( Package(pkg.vals[0], pkg.vals[1]) )
-            except IndexError:
-                buffer.append( Package([],[]) )
-        
-        # Propogate messages 
-        for i in range(self.size):
-            self.clear(i)
-            for j in range(self.size):
-                if adj[i][j]:
-                    to_incorp = Package( buffer[j].vals[0], buffer[j].vals[1] )
-                    to_incorp.record(i)
-                    self.contents[i].incorporate(to_incorp)
-    '''
-#age is history length - 1
-
-    def IS_propogate(self, adj):
+    def IS_propagate(self, adj):
         # First, we need a buffer to store the current state
         buffer = []
         for pkg in self.contents:
