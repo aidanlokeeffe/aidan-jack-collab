@@ -278,6 +278,37 @@ while passed and count < 6:
 	count += 1
 print("Does IS correctly pass one message in a 3 cycle? " + str(passed))
 
+N = 4
+entries = [[0,1,1,1],
+           [0,0,0,0],
+           [0,0,0,0],
+		   [0,0,0,0]]
+
+test_mat = np.array(entries).reshape((N,N))
+
+
+#star topology test
+a = Container(N)
+a.contents[0] = Package([1], [[0]])
+print(a)
+passed = True
+
+strings = ['{[1; [0]], [; []], [; []], [; []]}',
+'{[; []], [1; [0, 1]], [1; [0, 2]], [1; [0, 3]]}',
+'{[; []], [; []], [; []], [; []]}',
+'{[; []], [; []], [; []], [; []]}',
+'{[; []], [; []], [; []], [; []]}',
+'{[; []], [; []], [; []], [; []]}']
+count = 0
+while passed and count < 3:
+	passed = passed and (str(a) == strings[count])
+	a.IS_propogate(test_mat)
+	print(a)
+	count += 1
+print("Does IS correctly pass one message in a 3 cycle? " + str(passed))
+
+
+
 
 
 
