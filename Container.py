@@ -93,10 +93,15 @@ class Container(object):
         buffer = []
         for pkg in self.contents:
             try:
-                buffer.append(Pacakge(pkg.vals[0], pkg.vals[1]))
+                buffer.append(Package(pkg.vals[0], pkg.vals[1]))
             except IndexError:
                 buffer.append(Package([],[]))
 
         # Now, we update the entries in self.contents
-        # 
-
+        for j in range(self.size):
+            self.contents[j].clear()
+            for i in range(self.size):
+                if adj[i][j] and not buffer[i].is_empty():
+                    new_hist = [indiv_hist + [j] for indiv_hist in buffer[i].vals[1]]
+                    pkg_to_incorp = Package( buffer[i].vals[0], new_hist)
+                    self.contents[j].incorporate(pkg_to_incorp)

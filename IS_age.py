@@ -213,14 +213,20 @@ c.incorporate(d)
 print("\nHere will be the propogation method tests. Good luck!")
 
 # Here is a matrix for testing
+'''
 entries = [[0,1,0,0,1],
            [1,0,0,1,1],
            [0,1,0,1,0],
            [0,0,1,0,0],
            [1,1,1,1,0]]
-test_mat = np.array(entries).reshape((5,5))
+'''
+N = 3
+entries = [[0,1,0],
+           [0,0,1],
+           [1,0,0]]
+
+test_mat = np.array(entries).reshape((N,N))
 print(test_mat)
-print(test_mat[0])
 
 
 
@@ -235,12 +241,42 @@ print("How it feels to chew 5 Gum: https://www.youtube.com/watch?v=aAzIRaQVbeo")
 
 print("\nInformation Spreading Test")
 
-a = Container(5)
+'''
+a = Container(N)
 random.seed(4)
 a.fill(2,2)
 print(a)
-a.IS_propogate(test_mat)
+'''
+# Tests
+# Does just passing a message around in a loop seem to work?
+# In a star topology, do we get the expected result?
+# Is it true that nothing happens if we try to propogate an
+# empty message, as it should?
+
+N = 3
+entries = [[0,1,0],
+           [0,0,1],
+           [1,0,0]]
+
+test_mat = np.array(entries).reshape((N,N))
+
+a = Container(N)
+a.contents[0] = Package([1], [[0]])
 print(a)
+passed = True
+
+strings = ["{[; []], [1; [0, 1]], [; []]}",
+"{[; []], [; []], [1; [0, 1, 2]]}",
+"{[1; [0, 1, 2, 0]], [; []], [; []]}",
+"{[; []], [1; [0, 1, 2, 0, 1]], [; []]}",
+"{[; []], [; []], [1; [0, 1, 2, 0, 1, 2]]}",
+"{[1; [0, 1, 2, 0, 1, 2, 0]], [; []], [; []]}"]
+count = 0
+while passed and count < 6:
+	a.IS_propogate(test_mat)
+	passed = passed and (str(a) == strings[count])
+	count += 1
+print("Does IS correctly pass one message in a 3 cycle? " + str(passed))
 
 
 
