@@ -35,9 +35,9 @@ class Experiment(object):
         self.deaths = [] 
         
         if choice==0:
-            self.propogate = self.state.RW_propogate
+            self.propagate = self.state.RW_propagate
         else:
-            self.propogate = self.state.IS_propogate
+            self.propagate = self.state.IS_propagate
     
     def input_matrix(self, inFile):
         matrix = np.genfromtxt(inFile, delimiter = ',')
@@ -49,9 +49,9 @@ class Experiment(object):
 
     def advance(self, t):        
         if self.choice==0:
-            self.state.RW_propogate(self.adj)
+            self.state.RW_propagate(self.adj)
         else:
-            self.state.IS_propogate(self.adj)
+            self.state.IS_propagate(self.adj)
         
         # Add the new messages
         self.state.incorporate( Container(self.N).fill(t, self.load) )
