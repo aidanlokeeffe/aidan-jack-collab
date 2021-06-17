@@ -47,29 +47,42 @@ class Experiment(object):
         self.N = len(matrix)
         return None
 
-    def advance(self, t):        
+    def advance(self, t, debug=False):        
+        '''
         if self.choice==0:
             self.state.RW_propagate(self.adj)
         else:
             self.state.IS_propagate(self.adj)
-        
+        '''
+
         # Add the new messages
-        self.state.incorporate( Container(self.N).fill(t, self.load) )
+
+        new_message = Container(self.N)
+
+        if debug:
+            new_message.contents[0] = Package(["test_pkg"], [[0]])
+        else:
+            new_message.fill(t, self.load)
+        
+        
+        self.state.incorporate(new_message)
         
         # Ready to record attempted activity
-        self.attempted.append( [len(self.state[j][0]) for j in range(self.N)] )
+        self.attempted.append( [len(self.state.contents[j].vals[0]) for j in range(self.N)] )
         
         # The actual collision, with deaths recorded
         doomed = []
         for j in range(self.N):
-            if len(self.state[j][0]) > 1:
+            arg1 = self.state.contents[j].vals[0]
+            if len(arg1) > 1:
                 # Seems overkill, but we need to deep copy those who die
-                doomed.append(Package( self.state[0], self.state[1] ))
+                arg2 = self.state.contents[j].vals[1]
+                doomed.append( Package(arg1, arg2) )
                 self.state.clear(j)
         self.deaths.append(doomed)
         
-        self.actual.append([len(self.state[j][0]) for j in range(self.N)])
-        self.ages.append([len(self.state[j][1]) for j in range(self.N)])
+        self.actual.append([len(self.state.contents[j].vals[0]) for j in range(self.N)])
+        self.ages.append([len(self.state.contents[j].vals[1]) for j in range(self.N)])
     
     
     
@@ -77,9 +90,6 @@ class Experiment(object):
         for t in range(1, self.T):
             self.advance(t)
         return (self.state, self.attempted, self.actual, self.ages, self.deaths)
-
-    def read_adj(self, in_file):
-        return None
 
     # Output as a csv
     def write_attempted_csv(self, out_name):
@@ -137,9 +147,6 @@ class Experiment(object):
                 st += str(num) + ", "
             out_file.write(st[:-2] + "\n")
         out_file.close()
-
-
-
 
         return None
 
