@@ -45,7 +45,7 @@ class Container(object):
         buffer = []
         for pkg in self.contents:
             try:
-                buffer.append(Package(pkg[0],pkg[1]))
+                buffer.append(Package(pkg.vals[0],pkg.vals[1]))
             except IndexError:
                 buffer.append(Package([],[]))
         #clear out all old contents to write in new state 
@@ -55,16 +55,19 @@ class Container(object):
         for pkg in buffer:
             #how many/which outgoing edges go from this message's current node
             destinations = []
-            for matnav in range(self.size):
-                if adj[pkg.vals[1][0][-1]][matnav] > 0:
-                    destinations.append(matnav)
+        #NEED TO ACCOUNT FOR EMPTY PACKAGES HERE BECAUSE THE ISSUE IS EMPTY PACKAGES.
+            if pkg.vals[0] != []:
+                for matnav in range(self.size):
+                    if adj[pkg.vals[1][0][-1]][matnav] > 0:
+                        destinations.append(matnav)
             #randomly select a node to go to
             #send the message to that node
-            pkg.vals[1][0].append(random.choice(destinations))
+                pkg.vals[1][0].append(random.choice(destinations))
         #putting packages into the container in order from the buffer
         for pkg in buffer:
-            j=pkg.vals[1][0][-1]
-            self.contents[j].incorporate(pkg) #or make a new package? deep
+            if pkg.vals[0] != []:
+                j=pkg.vals[1][0][-1]
+                self.contents[j].incorporate(pkg) #or make a new package? deep
         return None
 
     def IS_propagate(self, adj):

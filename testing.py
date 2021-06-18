@@ -224,10 +224,43 @@ print(test_mat[0])
 
 
 
-#RW_propogate
+#RW_propagate
 # )) ???
 print("\nRandom Walk Test")
-print("How it feels to chew 5 Gum: https://www.youtube.com/watch?v=aAzIRaQVbeo")
+#print("How it feels to chew 5 Gum: https://www.youtube.com/watch?v=aAzIRaQVbeo")
+random.seed(24)
+N = 5
+entries = [[0,1,0,0,1],
+           [1,0,0,1,1],
+           [0,1,0,1,0],
+           [0,0,1,0,0],
+           [1,3,6,1,0]]
+ 
+test_mat = np.array(entries).reshape((N,N))
+ 
+a = Container(N)
+a.contents[0] = Package([1], [[4]])
+print(a)
+passed = True
+ 
+strings = [
+'{[1; [4]], [; []], [; []], [; []], [; []]}',
+'{[; []], [; []], [; []], [1; [4, 3]], [; []]}',
+'{[; []], [; []], [1; [4, 3, 2]], [; []], [; []]}',
+'{[; []], [1; [4, 3, 2, 1]], [; []], [; []], [; []]}',
+'{[1; [4, 3, 2, 1, 0]], [; []], [; []], [; []], [; []]}',
+'{[; []], [1; [4, 3, 2, 1, 0, 1]], [; []], [; []], [; []]}',
+'{[1; [4, 3, 2, 1, 0, 1, 0]], [; []], [; []], [; []], [; []]}'
+]
+count = 0
+while passed and count < 6:
+    a.RW_propagate(test_mat)
+    print(a)
+    count += 1
+    passed = passed and (str(a) == strings[count])
+print("Does RW correctly pass one message in the test matrix? " + str(passed))
+ 
+print('end RW test')
 
 #IS_propogate
 # )) Just work out an example by hand, then run the code
