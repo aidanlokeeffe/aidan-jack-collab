@@ -210,7 +210,7 @@ c.incorporate(d)
 #print(c)
 #print('yeet yes fam')
 
-print("\nHere will be the propogation method tests. Good luck!")
+print("\nHere will be the propagation method tests. Good luck!")
 
 # Here is a matrix for testing
 entries = [[0,1,0,0,1],
@@ -262,7 +262,7 @@ print("Does RW correctly pass one message in the test matrix? " + str(passed))
  
 print('end RW test')
 
-#IS_propogate
+#IS_propagate
 # )) Just work out an example by hand, then run the code
 # and see if it works properly
 
@@ -272,7 +272,7 @@ a = Container(5)
 random.seed(4)
 a.fill(2,2)
 print(a)
-a.IS_propogate(test_mat)
+a.IS_propagate(test_mat)
 print(a)
 
 
