@@ -48,13 +48,21 @@ test_exp.advance(1)
 test_exp.advance(2)
 test_exp.advance(3)
 
+
+for i in range(len(test_exp.deaths)):
+	print(i, test_exp.deaths[i])
+
+print()
+print( test_exp.get_death_edges(1) )
+
 '''
 print("\nState at time 1")
 print(test_exp.attempted)
 print(test_exp.actual)
 print(test_exp.ages)
-print(test_exp.deaths)
 '''
+
+
 
 # write_attempted_csv
 

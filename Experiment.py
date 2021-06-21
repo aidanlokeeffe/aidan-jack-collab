@@ -152,21 +152,25 @@ class Experiment(object):
 
         return None
 
-
-    # This one is kinda hard. To avoid 
+    # For the time being, I'm going to assume that we don't need this
     def write_age_at_death_csv(self, out_name):
         return None
 
-    def write_attempted_m(self, out_name):
-        return None
 
-    def write_actual_m(self, out_name):
-        return None
+    # WHAT IF THE MESSAGE DIES ON IT'S FIRST STEP?
+    def get_death_edges(self, t):
+        assert t in range(self.T)
 
-    def write_ages_m(self, out_name):
-        return None
+        out = []
 
-    def write_age_at_death_m(self, out_name):
-        return None
+        entry_of_interest = self.deaths[t]
 
-textExp = Experiment('testadjmat.csv', 2, 1)
+        for package in entry_of_interest:
+            M = len(package.vals[1])
+            for i in range(M):
+                if len(package.vals[1][i]) == 1:
+                    out.append( (package.vals[1][i][0], package.vals[1][i][0]) )
+                    continue
+                out.append( (package.vals[1][i][-2], package.vals[1][i][-1]) )
+
+        return out
