@@ -46,53 +46,6 @@ class Experiment(object):
             self.propagate = self.state.RW_propagate
         else:
             self.propagate = self.state.IS_propagate
-    '''
-    def advance(self, t, debug=False):        
-        # Add the new messages
-        new_message = Container(self.N)
-
-        print("At start of iteration " + str(t) + ": \n" , self.state)
-
-        new_message.fill(t, self.load)
-        print("The new message is: ", new_message)
-        
-        self.state.incorporate(new_message)
-        print("Random injection during iteration " + str(t) + ": \n", self.state)
-        
-        self.propagate(self.adj)
-
-        print("State before attempts are pruned: ", self.state)
-
-        # Ready to record attempted activity
-        self.attempted.append( [len(self.state.contents[j].vals[0]) for j in range(self.N)] )
-        
-        # The actual collision, with deaths recorded
-        doomed = []
-        for j in range(self.N):
-            arg1 = self.state.contents[j].vals[0]
-            if len(arg1) > 1:
-                # Seems overkill, but we need to deep copy those who die
-                arg2 = self.state.contents[j].vals[1]
-                doomed.append( Package(arg1, arg2) )
-                self.state.clear(j)
-        self.deaths.append(doomed)
-        
-        self.actual.append([len(self.state.contents[j].vals[0]) for j in range(self.N)])
-        #self.ages.append([len(self.state.contents[j].vals[1][0]) for j in range(self.N)])
-
-        survivor_ages = []
-        for j in range(self.N):
-            try:
-                survivor_ages.append( len(self.state.contents[j].vals[1][0] ) )
-            except IndexError:
-                survivor_ages.append(0)
-
-        #print(survivor_ages)
-
-        print("After deaths for iteration " + str(t) +": \n",self.state,"\n")
-
-        self.ages.append(survivor_ages)
-    '''
 
     def advance(self, t):
         #print("ITERATION " + str(t))
