@@ -272,7 +272,7 @@ a = Container(5)
 random.seed(4)
 a.fill(2,2)
 print(a)
-a.IS_propogate(test_mat)
+a.IS_propagate(test_mat)
 print(a)
 
 

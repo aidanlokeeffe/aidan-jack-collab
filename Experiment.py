@@ -6,6 +6,14 @@ from Package import Package
 class Experiment(object):
     # Thought for next time: maybe adj should be a file name, and we
     # read it in like big boys
+    def input_matrix(self, inFile):
+        matrix = np.genfromtxt(inFile, delimiter = ',')
+        if math.isnan(matrix[0][0]):
+            matrix = matrix[1:,1:]
+        self.adj = matrix
+        self.N = len(matrix)
+        return None
+
     def __init__(self, fileName, load, T, choice=0):
         # Inputs
         self.load = load
@@ -38,35 +46,23 @@ class Experiment(object):
             self.propagate = self.state.RW_propagate
         else:
             self.propagate = self.state.IS_propagate
-    
-    def input_matrix(self, inFile):
-        matrix = np.genfromtxt(inFile, delimiter = ',')
-        if math.isnan(matrix[0][0]):
-            matrix = matrix[1:,1:]
-        self.adj = matrix
-        self.N = len(matrix)
-        return None
-
+    '''
     def advance(self, t, debug=False):        
-        '''
-        if self.choice==0:
-            self.state.RW_propagate(self.adj)
-        else:
-            self.state.IS_propagate(self.adj)
-        '''
-
         # Add the new messages
-
         new_message = Container(self.N)
 
-        if debug:
-            new_message.contents[0] = Package(["test_pkg"], [[0]])
-        else:
-            new_message.fill(t, self.load)
-        
+        print("At start of iteration " + str(t) + ": \n" , self.state)
+
+        new_message.fill(t, self.load)
+        print("The new message is: ", new_message)
         
         self.state.incorporate(new_message)
+        print("Random injection during iteration " + str(t) + ": \n", self.state)
         
+        self.propagate(self.adj)
+
+        print("State before attempts are pruned: ", self.state)
+
         # Ready to record attempted activity
         self.attempted.append( [len(self.state.contents[j].vals[0]) for j in range(self.N)] )
         
@@ -82,10 +78,63 @@ class Experiment(object):
         self.deaths.append(doomed)
         
         self.actual.append([len(self.state.contents[j].vals[0]) for j in range(self.N)])
-        self.ages.append([len(self.state.contents[j].vals[1]) for j in range(self.N)])
-    
-    
-    
+        #self.ages.append([len(self.state.contents[j].vals[1][0]) for j in range(self.N)])
+
+        survivor_ages = []
+        for j in range(self.N):
+            try:
+                survivor_ages.append( len(self.state.contents[j].vals[1][0] ) )
+            except IndexError:
+                survivor_ages.append(0)
+
+        #print(survivor_ages)
+
+        print("After deaths for iteration " + str(t) +": \n",self.state,"\n")
+
+        self.ages.append(survivor_ages)
+    '''
+
+    def advance(self, t):
+        #print("ITERATION " + str(t))
+        #print("Last state: " + str(self.state))
+
+        # Propagate the messages according to the chosen rule
+        self.propagate(self.adj)
+        #print("Propogated: " + str(self.state))
+
+        # Add the random messages after propagating
+        new_message = Container(self.N)
+        new_message.fill(t, self.load)
+        #print("Injection: " + str(new_message))
+
+        self.state.incorporate(new_message)
+        #print("Post-injection: " + str(self.state))
+
+        # Record everything as needed
+        self.attempted.append( [len(self.state.contents[j].vals[0]) for j in range(self.N) ] )
+
+        # Perform the collision, and record deaths
+        doomed = []
+        for j in range(self.N):
+            arg1 = self.state.contents[j].vals[0]
+            if len(arg1) > 1:
+                arg2 = self.state.contents[j].vals[1]
+                doomed.append( Package(arg1, arg2) )
+                self.state.clear(j)
+        self.deaths.append(doomed)
+        #print("Post-deaths: " + str(self.state) + "\n")
+
+        self.actual.append( [len(self.state.contents[j].vals[0]) for j in range(self.N) ] )
+
+        survivor_ages = []
+        for j in range(self.N):
+            try:
+                survivor_ages.append( len(self.state.contents[j].vals[1][0]) )
+            except IndexError:
+                survivor_ages.append(0)
+
+        self.ages.append(survivor_ages)
+
     def execute(self):
         for t in range(1, self.T):
             self.advance(t)
@@ -142,7 +191,7 @@ class Experiment(object):
         # Write the rest of the data
         for t in range(self.T):
             st = str(t) + ", "
-            row = self.actual[t]
+            row = self.ages[t]
             for num in row:
                 st += str(num) + ", "
             out_file.write(st[:-2] + "\n")
