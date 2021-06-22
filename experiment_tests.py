@@ -30,6 +30,7 @@ print(test_exp.cumulative_death_edges(0, T))
 test_exp.write_attempted_csv("attempted_test.csv")
 test_exp.write_actual_csv("actual_test.csv")
 test_exp.write_ages_csv("ages_test.csv")
+test_exp.write_cumulative_death_edges_csv("cumulative_death_edges_test.csv")
 
 
 

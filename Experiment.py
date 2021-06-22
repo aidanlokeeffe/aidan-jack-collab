@@ -221,13 +221,18 @@ class Experiment(object):
 
         return out
 
-    def write_cumulative_death_edges(self, out_name):
-        mtx = [] + self.adj
+    def write_cumulative_death_edges_csv(self, out_name):
+        # First, deep copy the adjacency matrix, and modify it as needed
+        mtx = []
 
-        for i in range(N):
-            for j in range(N):
-                if mtx[i][j] == 0:
-                    mtx[i][j] = None
+        for i in range(self.N):
+            row = []
+            for j in range(self.N):
+                if self.adj[i][j] == 0:
+                    row.append(None)
+                    continue
+                row.append(self.adj[i][j])
+            mtx.append(row)
 
         death_dict = self.cumulative_death_edges(0,self.T)
 
@@ -238,7 +243,19 @@ class Experiment(object):
 
         out_file = open(out_name, "w")
 
-        for i in range(N):
-            st = ""
-            for j in range(N):
-                st += out
+        # Write the first line
+        st = ", "
+        for i in range(self.N):
+            st += str(i) + ", "
+        out_file.write(st[:-2] + "\n")
+
+        # Write the remaining lines
+        for i in range(self.N):
+            st = str(i) + ", "
+            for j in range(self.N):
+                st += str( mtx[i][j] ) + ", "
+            out_file.write(st[:-2] + "\n")
+
+        out_file.close()
+
+        return None
