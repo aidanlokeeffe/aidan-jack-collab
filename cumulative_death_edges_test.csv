@@ -1,0 +1,6 @@
+, 0, 1, 2, 3, 4
+0, 1, 2, None, None, 2
+1, 2, 3, None, 4, 2
+2, None, 4, None, 4, None
+3, None, None, 1, 1, None
+4, 2, 2, 1, 2, None
