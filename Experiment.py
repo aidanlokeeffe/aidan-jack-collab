@@ -40,7 +40,7 @@ class Experiment(object):
         # This should also be computed only after collision
         self.ages.append([len(self.state.contents[j].vals[1]) for j in range(self.N)])
         # This will be an array of arrays of dead packages, with one inner array per timestep            
-        self.deaths = [] 
+        self.deaths.append([]) 
         
         if choice==0:
             self.propagate = self.state.RW_propagate
@@ -97,7 +97,7 @@ class Experiment(object):
     def write_attempted_csv(self, out_name):
         out_file = open(out_name, "w")
 
-        # Write top column
+        # Write top line
         st = "Time, "
         for n in range(self.N):
             st += str(n) + ", "
@@ -132,10 +132,11 @@ class Experiment(object):
         out_file.close()
         return None
 
+    '''
     def write_ages_csv(self, out_name):
         out_file = open(out_name, "w")
 
-        # Write top column
+        # Write top line
         st = "Time, "
         for n in range(self.N):
             st += "Age at node " + str(n) + ", "
@@ -151,17 +152,62 @@ class Experiment(object):
         out_file.close()
 
         return None
+    '''
+
+    def write_ages_csv(self, out_name):
+        # Get the max age needed
+        M = max( set( self.ages[i][j] for i in range(self.T) for j in range(self.N) ) )
+
+        out_file = open(out_name, "w")
+
+        # Write top line
+        st = "Time, "
+        for age in range(M+1):
+            st += str(age) + ", "
+        out_file.write(st[:-2] + "\n")
+
+        # Write the rest of the data
+        for t in range(self.T):
+            st = str(t) + ", "
+            for age in range(M+1):
+                st += str( self.ages[t].count(age) ) + ", "
+            out_file.write(st[:-2] + "\n")
+
+        out_file.close()
+        return None
+            
+
 
     # For the time being, I'm going to assume that we don't need this
     def write_age_at_death_csv(self, out_name):
         return None
 
+    # Returns a dictionary
+    def cumulative_death_edges(self, t0, t1):
+        out = {}
+
+        # Loop through range(t0, t1+1)
+        for t in range(t0, t1):
+            death_edges = self.timewise_death_edges(t)
+            for edge in death_edges:
+                try:
+                    out[edge] += 1
+                except KeyError:
+                    out[edge] = 1
+
+        return out
+
+
+
+
 
     # WHAT IF THE MESSAGE DIES ON IT'S FIRST STEP?
-    def get_death_edges(self, t):
-        assert t in range(self.T)
+    def timewise_death_edges(self, t):
+        #assert t in range(self.T + 1)
 
         out = []
+        if t > self.T:
+            return out
 
         entry_of_interest = self.deaths[t]
 
@@ -174,3 +220,25 @@ class Experiment(object):
                 out.append( (package.vals[1][i][-2], package.vals[1][i][-1]) )
 
         return out
+
+    def write_cumulative_death_edges(self, out_name):
+        mtx = [] + self.adj
+
+        for i in range(N):
+            for j in range(N):
+                if mtx[i][j] == 0:
+                    mtx[i][j] = None
+
+        death_dict = self.cumulative_death_edges(0,self.T)
+
+        death_edges = death_dict.keys()
+
+        for edge in death_edges:
+            mtx[edge[0]][edge[1]] = death_dict[edge]
+
+        out_file = open(out_name, "w")
+
+        for i in range(N):
+            st = ""
+            for j in range(N):
+                st += out
