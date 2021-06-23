@@ -12,7 +12,7 @@ def animateBarchart(inFile):
     matrix = np.genfromtxt(inFile, delimiter=',')
     if math.isnan(matrix[0][0]):
         matrix = matrix[1:,1:]
-    print(matrix)
+    #print(matrix)
     N= len(matrix[0])
     fig=plt.figure()
     if inFile[1]=='c':
@@ -33,8 +33,8 @@ def animateBarchart(inFile):
     
 
     def barlist(n): 
-        if n >= N:
-            return matrix[N]
+        if n >= len(matrix):
+            return matrix[-1]
         else:
             return matrix[n]
 
