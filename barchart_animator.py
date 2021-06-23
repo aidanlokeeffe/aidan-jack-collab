@@ -40,4 +40,3 @@ def animateBarchart(inFile):
 
 animateBarchart('attempted_test.csv')
 animateBarchart('actual_test.csv')
-
