@@ -12,7 +12,7 @@ def animateBarchart(inFile):
     matrix = np.genfromtxt(inFile, delimiter=',')
     if math.isnan(matrix[0][0]):
         matrix = matrix[1:,1:]
-    print(matrix)
+    #print(matrix)
     N= len(matrix[0])
     fig=plt.figure()
     if inFile[1]=='c':
@@ -29,12 +29,13 @@ def animateBarchart(inFile):
         plt.title('Message Ages')
         plt.xlabel('Age')
         plt.ylabel('No. of Messages')
+        plt.ylim(0,10)
         
     
 
     def barlist(n): 
-        if n >= N:
-            return matrix[N]
+        if n >= len(matrix):
+            return matrix[-1]
         else:
             return matrix[n]
 
@@ -47,7 +48,7 @@ def animateBarchart(inFile):
     x=range(N) #number of bars
     barcollection = plt.bar(x,barlist(1))    
 
-    anim=animation.FuncAnimation(fig,animate,repeat=True,blit=False,frames=n,
+    anim=animation.FuncAnimation(fig,animate,repeat=False,blit=False,frames=n,
                              interval=200)
 
     #anim.save('mymovie.mp4',writer=animation.FFMpegWriter(fps=10))

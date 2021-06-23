@@ -240,7 +240,7 @@ test_mat = np.array(entries).reshape((N,N))
  
 a = Container(N)
 a.contents[0] = Package([1], [[4]])
-print(a)
+#print(a)
 passed = True
  
 strings = [
@@ -255,7 +255,7 @@ strings = [
 count = 0
 while passed and count < 6:
     a.RW_propagate(test_mat)
-    print(a)
+    #print(a)
     count += 1
     passed = passed and (str(a) == strings[count])
 print("Does RW correctly pass one message in the test matrix? " + str(passed))
