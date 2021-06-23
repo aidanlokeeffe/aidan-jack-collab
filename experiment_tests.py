@@ -6,7 +6,7 @@ from Container import Container
 from Experiment import Experiment
 
 
-test_exp = Experiment("testadjmat.csv", 1, 10, choice=1)
+test_exp = Experiment("testadjmat.csv", 2, 10, choice=1)
 
 T = test_exp.T
 

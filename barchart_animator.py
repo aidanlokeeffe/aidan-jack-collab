@@ -29,6 +29,7 @@ def animateBarchart(inFile):
         plt.title('Message Ages')
         plt.xlabel('Age')
         plt.ylabel('No. of Messages')
+        plt.ylim(0,10)
         
     
 
@@ -47,7 +48,7 @@ def animateBarchart(inFile):
     x=range(N) #number of bars
     barcollection = plt.bar(x,barlist(1))    
 
-    anim=animation.FuncAnimation(fig,animate,repeat=True,blit=False,frames=n,
+    anim=animation.FuncAnimation(fig,animate,repeat=False,blit=False,frames=n,
                              interval=200)
 
     #anim.save('mymovie.mp4',writer=animation.FFMpegWriter(fps=10))
