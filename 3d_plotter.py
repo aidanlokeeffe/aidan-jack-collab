@@ -1,12 +1,22 @@
+import matplotlib as mpl
 from mpl_toolkits.mplot3d import Axes3D
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
 import math
 
 
 def plotKillingEdge(inFile):
     fig = plt.figure()
+    #plt.title('Messages Killed by Edge')
+    #plt.xlabel('Sending Node')
+    #plt.ylabel('Recieving Node')
+    #plt.zlabel('No. of Killed Messages')
     ax1 = fig.add_subplot(111, projection='3d')
+    ax1.set_xlabel('Sending Node')
+    ax1.set_ylabel('Recieving Node')
+    ax1.set_zlabel('No. of Killed Messages')
+    ax1.set_title('No. of Messages Killed by Edge')
+
 
     matrix = np.genfromtxt(inFile, delimiter=',')
     if math.isnan(matrix[0][0]):
@@ -14,7 +24,6 @@ def plotKillingEdge(inFile):
     N=len(matrix)
     xpos = []
     ypos = []
-    num_elements = len(xpos)
 
     dz = []
     for i in range(N):
@@ -30,6 +39,7 @@ def plotKillingEdge(inFile):
 
     dx = np.ones(totally)
     dy = np.ones(totally)
+
     ax1.bar3d(xpos, ypos, zpos, dx, dy, dz, color='#00ceaa')
     plt.show()
 
