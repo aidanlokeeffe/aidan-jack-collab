@@ -3,9 +3,9 @@ import random
 class Ensemble(object):
 
 	def __init__(self, adj):
-		self.ensemble = []
+		self.members = []
 		self.N = len(adj)
-		self.seed = [ adj[i][j] for i in range(self.N) for j in range(self.N) ]
+		self.seed = [[adj[i][j] for j in range(self.N)] for i in range(self.N)]
 
 		self.num_iter = 0
 		for i in range(self.N):
@@ -29,15 +29,14 @@ class Ensemble(object):
 
 		while abort_counter > 0 and seeking:
 			# Ranodmly choose i, and then j such that mtx[i][j] = 1
-			i = random.sample(range(self.N), 1)
+			i = random.sample(range(self.N), 1)[0]
 			valid_j = [j for j in range(self.N) if mtx[i][j]]
-			j = random.sample(valid_j, 1)
+			j = random.sample(valid_j, 1)[0]
 
 			# Ranodmly choose k, and then l such that mtx[k][l] = 1
-			k = random.sample(range(self.N), 1)
+			k = random.sample(range(self.N), 1)[0]
 			valid_l = [l for l in range(self.N) if mtx[k][l]]
-			l = random.sample(valid_l, 1)
-
+			l = random.sample(valid_l, 1)[0]
 
 			if (mtx[k][j]) or (mtx[i][l]):
 				abort_counter -= 1
@@ -49,10 +48,16 @@ class Ensemble(object):
 			mtx[i][l] = 1
 			seeking = False
 
-	def create_member(self):
-		member = [ self.seed[i][j] for i in range(self.N) for j in range(self.N) ]
+		if abort_counter == 0:
+			print("Aborted")
+			raise AssertionError
 
+	def new_member(self):
+		member = [[self.seed[i][j] for j in range(self.N)] for i in range(self.N)]
 		for _ in range(self.num_iter):
 			self.rewire(member)
+		self.members.append(member)
 
-		self.ensemble.append(member)
+	def create_members(self, n):
+		for _ in range(n):
+			self.new_member()
