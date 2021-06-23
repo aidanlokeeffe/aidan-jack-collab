@@ -132,27 +132,6 @@ class Experiment(object):
         out_file.close()
         return None
 
-    '''
-    def write_ages_csv(self, out_name):
-        out_file = open(out_name, "w")
-
-        # Write top line
-        st = "Time, "
-        for n in range(self.N):
-            st += "Age at node " + str(n) + ", "
-        out_file.write(st[:-2] + "\n")
-
-        # Write the rest of the data
-        for t in range(self.T):
-            st = str(t) + ", "
-            row = self.ages[t]
-            for num in row:
-                st += str(num) + ", "
-            out_file.write(st[:-2] + "\n")
-        out_file.close()
-
-        return None
-    '''
 
     def write_ages_csv(self, out_name):
         # Get the max age needed
@@ -162,14 +141,14 @@ class Experiment(object):
 
         # Write top line
         st = "Time, "
-        for age in range(M+1):
+        for age in range(0, M+1):
             st += str(age) + ", "
         out_file.write(st[:-2] + "\n")
 
         # Write the rest of the data
         for t in range(self.T):
             st = str(t) + ", "
-            for age in range(M+1):
+            for age in range(1, M+2):
                 st += str( self.ages[t].count(age) ) + ", "
             out_file.write(st[:-2] + "\n")
 
