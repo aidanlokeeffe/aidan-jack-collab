@@ -14,8 +14,6 @@ class Ensemble(object):
 		self.num_iter *= 100
 
 
-
-
 	# This method takes a matrix, and performs one step of Maslov-Sneppen. It modifies mtx in
 	# place, so do a deep copy of self.seed any time this is called
 	def rewire(self, mtx):

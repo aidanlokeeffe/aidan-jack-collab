@@ -141,14 +141,14 @@ class Experiment(object):
 
         # Write top line
         st = "Time, "
-        for age in range(0, M+1):
+        for age in range(1, M+1):
             st += str(age) + ", "
         out_file.write(st[:-2] + "\n")
 
         # Write the rest of the data
         for t in range(self.T):
             st = str(t) + ", "
-            for age in range(1, M+2):
+            for age in range(1, M+1):
                 st += str( self.ages[t].count(age) ) + ", "
             out_file.write(st[:-2] + "\n")
 
@@ -175,8 +175,6 @@ class Experiment(object):
                     out[edge] = 1
 
         return out
-
-
 
 
 
