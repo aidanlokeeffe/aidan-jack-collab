@@ -8,3 +8,13 @@
 #LOOKING AT THE AFOREMENTIONED STAT: the beginning weird bit is the transient. get rid of the transient
 #cut off the first 5 to 20% 
 #gold standard is 500 to 1000 steps
+#THEORETICAL / PURE / ALGORITHM THEORY IDEA: RANDOMIZING A NETWORK (KEEP ROW AND COLUMN SUMS THE SAME?)
+#ASYMMETRICAL EDGE WEIGHTS MEANING if two nodes are doubly linked (A to B AND B to A), is one path/direction more used than the other? why?
+#   alt, if they are bidirectional or an undirected link, which way does it usually go and why?
+#   what if we consider weighting the edges based off of activity, or is there already correlation between weight and traffic
+
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+img = mpimg.imread('meetingpic.jpg')
+imgplot = plt.imshow(img)
+plt.show()
