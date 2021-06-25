@@ -56,6 +56,31 @@ class Ensemble(object):
 			self.rewire(member)
 		self.members.append(member)
 
-	def create_members(self, n):
+	def er_graph(self,nodes,probability):
+    L = [0]*nodes
+    matrix=[]
+    for n in range(nodes):
+        matrix.append(L)
+    for i in range(nodes):
+        for j in range(nodes):
+            if i==j:
+                matrix[i][j]=0
+            else:
+                randy = random.random()
+                if randy>probability:
+                    matrix[i][j]=1
+                else:
+                    matrix[i][j]=0
+    return matrix
+
+	def er_fill(self, amount, nodes, prob):
+		self.members=[]
+		for k in range(amount):
+			newbaby = self.er_graph(nodes, prob)
+			self.members.append(newbaby)
+
+		
+
+	def ms_fill(self, n):
 		for _ in range(n):
 			self.new_member()
