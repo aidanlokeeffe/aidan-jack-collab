@@ -4,16 +4,9 @@ from Container import Container
 from Package import Package
 
 class Experiment(object):
-    # Thought for next time: maybe adj should be a file name, and we
-    # read it in like big boys
-    def input_matrix(self, inFile):
-        matrix = np.genfromtxt(inFile, delimiter = ',')
-        if math.isnan(matrix[0][0]):
-            matrix = matrix[1:,1:]
-        self.adj = matrix
-        self.N = len(matrix)
-        return None
-
+    ##############################
+    # SETUP METHODS
+    ##############################
     def __init__(self, fileName, load, T, choice=0):
         # Inputs
         self.load = load
@@ -47,22 +40,29 @@ class Experiment(object):
         else:
             self.propagate = self.state.IS_propagate
 
-    def advance(self, t):
-        #print("ITERATION " + str(t))
-        #print("Last state: " + str(self.state))
 
+    def input_matrix(self, inFile):
+        matrix = np.genfromtxt(inFile, delimiter = ',')
+        if math.isnan(matrix[0][0]):
+            matrix = matrix[1:,1:]
+        self.adj = matrix
+        self.N = len(matrix)
+        return None
+
+
+    ##############################
+    # DYNAMIC METHODS
+    ##############################
+    def advance(self, t):
         # Propagate the messages according to the chosen rule
         self.propagate(self.adj)
-        #print("Propogated: " + str(self.state))
-
+        
         # Add the random messages after propagating
         new_message = Container(self.N)
         new_message.fill(t, self.load)
-        #print("Injection: " + str(new_message))
-
+        
         self.state.incorporate(new_message)
-        #print("Post-injection: " + str(self.state))
-
+        
         # Record everything as needed
         self.attempted.append( [len(self.state.contents[j].vals[0]) for j in range(self.N) ] )
 
@@ -75,8 +75,7 @@ class Experiment(object):
                 doomed.append( Package(arg1, arg2) )
                 self.state.clear(j)
         self.deaths.append(doomed)
-        #print("Post-deaths: " + str(self.state) + "\n")
-
+        
         self.actual.append( [len(self.state.contents[j].vals[0]) for j in range(self.N) ] )
 
         survivor_ages = []
@@ -93,7 +92,72 @@ class Experiment(object):
             self.advance(t)
         return (self.state, self.attempted, self.actual, self.ages, self.deaths)
 
-    # Output as a csv
+
+
+
+    ##############################
+    # DATA METHODS
+    ##############################
+    # Average age stuff
+    def nodewise_average_age(self):
+        out = {}
+        for j in range(self.N):
+            entry = 0
+            for t in range( self.T ):
+                entry += self.ages[t][j]
+            out[j] = (entry / self.T)
+        return out
+
+    def timewise_average_age(self):
+        out = {}
+        for t in range(self.N):
+            entry = 0
+            for j in range( self.N ):
+                entry = self.ages[t][j]
+            out[t] = (entry / self.N)
+        return out
+
+
+
+
+    # Death edge stuff
+    def timewise_death_edges(self, t):
+        out = []
+        if t > self.T:
+            return out
+        
+        entry_of_interest = self.deaths[t]
+
+        for package in entry_of_interest:
+            M = len(package.vals[1])
+            for i in range(M):
+                if len(package.vals[1][i]) == 1:
+                    out.append( (package.vals[1][i][0], package.vals[1][i][0]) )
+                    continue
+                out.append( (package.vals[1][i][-2], package.vals[1][i][-1]) )
+        return out
+
+    def cumulative_death_edges(self, t0, t1):
+        out = {}
+        # Loop through range(t0, t1+1)
+        for t in range(t0, t1):
+            death_edges = self.timewise_death_edges(t)
+            for edge in death_edges:
+                try:
+                    out[edge] += 1
+                except KeyError:
+                    out[edge] = 1
+        return out
+
+
+
+
+
+    ##############################
+    # OUTPUT METHODS
+    ##############################
+
+    # Basic outputs
     def write_attempted_csv(self, out_name):
         out_file = open(out_name, "w")
 
@@ -132,7 +196,6 @@ class Experiment(object):
         out_file.close()
         return None
 
-
     def write_ages_csv(self, out_name):
         # Get the max age needed
         M = max( set( self.ages[i][j] for i in range(self.T) for j in range(self.N) ) )
@@ -154,50 +217,45 @@ class Experiment(object):
 
         out_file.close()
         return None
-            
-
-
-    # For the time being, I'm going to assume that we don't need this
-    def write_age_at_death_csv(self, out_name):
-        return None
-
-    # Returns a dictionary
-    def cumulative_death_edges(self, t0, t1):
-        out = {}
-
-        # Loop through range(t0, t1+1)
-        for t in range(t0, t1):
-            death_edges = self.timewise_death_edges(t)
-            for edge in death_edges:
-                try:
-                    out[edge] += 1
-                except KeyError:
-                    out[edge] = 1
-
-        return out
 
 
 
-    # WHAT IF THE MESSAGE DIES ON IT'S FIRST STEP?
-    def timewise_death_edges(self, t):
-        #assert t in range(self.T + 1)
+    # Average age outputs
+    def write_nodewise_average_age_csv(self, out_name):
+        # Get this data
+        node_averages = self.nodewise_average_age()
 
-        out = []
-        if t > self.T:
-            return out
+        out_file = open(out_name, "w")
 
-        entry_of_interest = self.deaths[t]
+        # Write the top line
+        out_file.write("Node, Average Age\n")
 
-        for package in entry_of_interest:
-            M = len(package.vals[1])
-            for i in range(M):
-                if len(package.vals[1][i]) == 1:
-                    out.append( (package.vals[1][i][0], package.vals[1][i][0]) )
-                    continue
-                out.append( (package.vals[1][i][-2], package.vals[1][i][-1]) )
+        # Write the rest of the data
+        for j in range(self.N):
+            out_file.write(str(j) + ", " + str(node_averages[j]) + "\n")
 
-        return out
+        out_file.close()
 
+    def write_timewise_average_age_csv(self, out_name):
+        # Get this data
+        time_averages = self.timewise_average_age()
+
+        out_file = open(out_name, "w")
+
+        # Write the top line
+        out_file.write("Time, Average Age\n")
+
+        # Write the rest of the data
+        for t in range(self.T):
+            out_file.write(str(t) + ", " + str(time_averages[t]) + "\n")
+
+        out_file.close()
+
+
+
+
+
+    # Death edge outputs
     def write_cumulative_death_edges_csv(self, out_name):
         # First, deep copy the adjacency matrix, and modify it as needed
         mtx = []
@@ -236,3 +294,4 @@ class Experiment(object):
         out_file.close()
 
         return None
+
