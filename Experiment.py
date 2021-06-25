@@ -93,6 +93,8 @@ class Experiment(object):
             self.advance(t)
         return (self.state, self.attempted, self.actual, self.ages, self.deaths)
 
+
+
     # Output as a csv
     def write_attempted_csv(self, out_name):
         out_file = open(out_name, "w")
