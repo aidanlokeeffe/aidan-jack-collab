@@ -88,8 +88,11 @@ class Experiment(object):
         self.ages.append(survivor_ages)
 
     def execute(self):
+        print("HERE ARE THE STATES")
+        print( "t = 0: " + str(self.state) )
         for t in range(1, self.T):
             self.advance(t)
+            print( "t = " + str(t) + ": " + str(self.state) ) 
         return (self.state, self.attempted, self.actual, self.ages, self.deaths)
 
 
@@ -99,6 +102,7 @@ class Experiment(object):
     # DATA METHODS
     ##############################
     # Average age stuff
+    '''
     def nodewise_average_age(self):
         out = {}
         for j in range(self.N):
@@ -107,14 +111,12 @@ class Experiment(object):
                 entry += self.ages[t][j]
             out[j] = (entry / self.T)
         return out
+    '''
 
     def timewise_average_age(self):
         out = {}
-        for t in range(self.N):
-            entry = 0
-            for j in range( self.N ):
-                entry = self.ages[t][j]
-            out[t] = (entry / self.N)
+        for t in range(self.T):
+            out[t] = sum( self.ages[t] )/self.N
         return out
 
 
@@ -221,6 +223,7 @@ class Experiment(object):
 
 
     # Average age outputs
+    '''
     def write_nodewise_average_age_csv(self, out_name):
         # Get this data
         node_averages = self.nodewise_average_age()
@@ -235,10 +238,12 @@ class Experiment(object):
             out_file.write(str(j) + ", " + str(node_averages[j]) + "\n")
 
         out_file.close()
+    '''
 
     def write_timewise_average_age_csv(self, out_name):
         # Get this data
         time_averages = self.timewise_average_age()
+        print(time_averages)
 
         out_file = open(out_name, "w")
 
