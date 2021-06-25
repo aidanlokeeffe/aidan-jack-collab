@@ -94,8 +94,7 @@ class Experiment(object):
             self.advance(t)
             print( "t = " + str(t) + ": " + str(self.state) ) 
         return (self.state, self.attempted, self.actual, self.ages, self.deaths)
-      
-      
+
     ##############################
     # DATA METHODS
     ##############################
