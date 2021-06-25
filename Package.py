@@ -14,6 +14,9 @@ class Package(object):
         self.vals = [list(),list()]
         return None
     
+    def is_empty(self):
+        return (len(self.vals[0]) == 0) and (len(self.vals[1]) == 0)
+
 
     # (!!!) We might not even need this function
     def record(self, j):

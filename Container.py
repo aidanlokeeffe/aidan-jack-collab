@@ -39,13 +39,13 @@ class Container(object):
         for j in range(self.size):
             self.contents[j].incorporate(other.contents[j])
     
-    def RW_propogate(self, adj):
+    def RW_propagate(self, adj):
         #take each message
         #deep copy contents into a buffer array
         buffer = []
         for pkg in self.contents:
             try:
-                buffer.append(Package(pkg[0],pkg[1]))
+                buffer.append(Package(pkg.vals[0],pkg.vals[1]))
             except IndexError:
                 buffer.append(Package([],[]))
         #clear out all old contents to write in new state 
@@ -55,33 +55,35 @@ class Container(object):
         for pkg in buffer:
             #how many/which outgoing edges go from this message's current node
             destinations = []
-            for matnav in range(self.size):
-                if adj[pkg.vals[1][0][-1]][matnav] > 0:
-                    destinations.append(matnav)
+        #NEED TO ACCOUNT FOR EMPTY PACKAGES HERE BECAUSE THE ISSUE IS EMPTY PACKAGES.
+            if pkg.vals[0] != []:
+                for matnav in range(self.size):
+                    if adj[pkg.vals[1][0][-1]][matnav] > 0:
+                        destinations.append(matnav)
             #randomly select a node to go to
             #send the message to that node
-            pkg.vals[1][0].append(random.choice(destinations))
+                pkg.vals[1][0].append(random.choice(destinations))
         #putting packages into the container in order from the buffer
         for pkg in buffer:
-            j=pkg.vals[1][0][-1]
-            self.contents[j].incorporate(pkg) #or make a new package? deep
+            if pkg.vals[0] != []:
+                j=pkg.vals[1][0][-1]
+                self.contents[j].incorporate(pkg) #or make a new package? deep
         return None
-    
-    def IS_propogate(self, adj):
+
+    def IS_propagate(self, adj):
+        # First, we need a buffer to store the current state
         buffer = []
         for pkg in self.contents:
-
             try:
-                buffer.append( Package(pkg.vals[0], pkg.vals[1]) )
+                buffer.append(Package(pkg.vals[0], pkg.vals[1]))
             except IndexError:
-                buffer.append( Package([],[]) )
-        
-        # Propogate messages 
-        for i in range(self.size):
-            self.clear(i)
-            for j in range(self.size):
-                if adj[i][j]:
-                    to_incorp = Package( buffer[j].vals[0], buffer[j].vals[1] )
-                    to_incorp.record(i)
-                    self.contents[i].incorporate(to_incorp)
-#age is history length - 1
+                buffer.append(Package([],[]))
+
+        # Now, we update the entries in self.contents
+        for j in range(self.size):
+            self.contents[j].clear()
+            for i in range(self.size):
+                if adj[i][j] and not buffer[i].is_empty():
+                    new_hist = [indiv_hist + [j] for indiv_hist in buffer[i].vals[1]]
+                    pkg_to_incorp = Package( buffer[i].vals[0], new_hist)
+                    self.contents[j].incorporate(pkg_to_incorp)
