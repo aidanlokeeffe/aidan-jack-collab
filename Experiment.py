@@ -95,21 +95,8 @@ class Experiment(object):
             print( "t = " + str(t) + ": " + str(self.state) ) 
         return (self.state, self.attempted, self.actual, self.ages, self.deaths)
 
-    ##############################
-    # DATA METHODS
-    ##############################
-    # Average age stuff
-    '''
-    def nodewise_average_age(self):
-        out = {}
-        for j in range(self.N):
-            entry = 0
-            for t in range( self.T ):
-                entry += self.ages[t][j]
-            out[j] = (entry / self.T)
-        return out
-    '''
 
+    # Age average stuff
     def timewise_average_age(self):
         out = {}
         for t in range(self.T):
