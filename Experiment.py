@@ -143,11 +143,11 @@ class Experiment(object):
         self.node_hists.append( next_node_hist )
 
     def execute(self):
-        print("HERE ARE THE STATES")
-        print( "t = 0: " + str(self.state) )
+        #print("HERE ARE THE STATES")
+        #print( "t = 0: " + str(self.state) )
         for t in range(1, self.T):
             self.advance(t)
-            print( "t = " + str(t) + ": " + str(self.state) ) 
+            #print( "t = " + str(t) + ": " + str(self.state) ) 
         return (self.state, self.attempted, self.actual, self.ages, self.deaths)
 
 
