@@ -1,3 +1,28 @@
+'''
+This class depends on the Package class, so please read the comments on that 
+class file if this code is confusing.
+
+A container is a length N array of packages. The j-th component of a container
+represents the message at node j. If the j-th component is the empty package, 
+then no message is at node j.
+
+The fill function takes paramaters t and load. t is the current timestep, and
+ties into the experiment class. load is the number of messages to be injected.
+The reason we need the time is so we can generate load unique message IDs.
+Both random walk and information spreading require a random injection of
+messages, hence the need to import random here.
+
+clear, record, and incorporate are extension of the corresponding function from
+the Package class
+
+The function IS_propagate takes an adjacency matrix, and sends each message 
+down every outgoing edge from its current position, recording as needed. 
+RW_propagate does a similar thing, but with an unbiased random walk instead.
+Note that these methods do not account for collisions; that happens in the 
+experiment class.
+'''
+
+
 import random
 from Package import Package
 

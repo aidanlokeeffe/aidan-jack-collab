@@ -23,14 +23,21 @@ test_exp.execute()
 #print()
 #print(test_exp.cumulative_death_edges(0, T))
 
+print()
+print("ARRGH, HERE BE THE DEATHS!!!!!!")
+for t in range(T):
+	print("t = " + str(t) +": " + str(test_exp.deaths[t]))
+
 
 
 test_exp.write_attempted_csv("attempted_test.csv")
 test_exp.write_actual_csv("actual_test.csv")
 test_exp.write_ages_csv("ages_test.csv")
 test_exp.write_cumulative_death_edges_csv("cumulative_death_edges_test.csv")
-test_exp.write_nodewise_average_age_csv("nodewise_average_age_test.csv")
 test_exp.write_timewise_average_age_csv("timewise_average_age_test.csv")
+test_exp.write_timewise_max_age_csv("timewise_max_age_test.csv")
+test_exp.write_verif_output_1("verif_1.csv")
+test_exp.write_verif_output_2("verif_2.csv")
 
 
 print("\nLOOK HERE")
@@ -42,6 +49,13 @@ while True:
 	except IndexError:
 		break
 print()
+
+print("AVERAGE AGE AT DEATH")
+print( test_exp.average_death_age() )
+
+print()
+print("NODE HISTS")
+print(test_exp.node_hists)
 
 
 
