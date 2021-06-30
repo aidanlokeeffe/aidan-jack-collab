@@ -10,6 +10,8 @@ import threed_plotter
 
 nodes = 91
 prob = .2
+T=10000
+choice = 0
 
 matrix = []
 count = 0
@@ -25,7 +27,7 @@ for i in range(nodes):
 np.savetxt("testadjmat.csv", matrix, delimiter=',')
 
 
-test_exp = Experiment("testadjmat.csv", 9, 10000, choice=0)
+test_exp = Experiment("testadjmat.csv", nodes//10, T, choice)
 
 T = test_exp.T
 
@@ -65,7 +67,7 @@ while True:
 		i+=1
 	except IndexError:
 		break
-avgs = avgs[1000:]
+avgs = avgs[(T//10):]
 trueavg = sum(avgs)/len(avgs)
 print("THE AVERAGE MESSAGE AGE WAS " + str(trueavg))
 
@@ -77,7 +79,7 @@ threed_plotter.plotKillingEdge('cumulative_death_edges_test.csv')
 
 
 
-test_exp = Experiment("monkey1unweight.csv", 9, 10000, choice=0)
+test_exp = Experiment("monkey1unweight.csv", nodes//10, T, 0)
 
 T = test_exp.T
 
@@ -117,7 +119,7 @@ while True:
 		i+=1
 	except IndexError:
 		break
-avgs = avgs[1000:]
+avgs = avgs[T//10:]
 trueavg = sum(avgs)/len(avgs)
 print("THE AVERAGE MESSAGE AGE WAS " + str(trueavg))
 
