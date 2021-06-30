@@ -29,7 +29,7 @@ def animateBarchart(inFile):
         plt.title('Message Ages')
         plt.xlabel('Age')
         plt.ylabel('No. of Messages')
-        plt.ylim(0,10)
+        plt.ylim(0,20)
         
     
 
@@ -49,11 +49,11 @@ def animateBarchart(inFile):
     barcollection = plt.bar(x,barlist(1))    
 
     anim=animation.FuncAnimation(fig,animate,repeat=False,blit=False,frames=n,
-                             interval=200)
+                             interval=0)
 
     #anim.save('mymovie.mp4',writer=animation.FFMpegWriter(fps=10))
     plt.show()
 
-animateBarchart('attempted_test.csv')
-animateBarchart('actual_test.csv')
-animateBarchart('ages_test.csv')
+#animateBarchart('attempted_test.csv')
+#animateBarchart('actual_test.csv')
+#animateBarchart('ages_test.csv')

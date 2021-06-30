@@ -43,4 +43,4 @@ def plotKillingEdge(inFile):
     ax1.bar3d(xpos, ypos, zpos, dx, dy, dz, color='#00ceaa')
     plt.show()
 
-plotKillingEdge('cumulative_death_edges_test.csv')
+#plotKillingEdge('cumulative_death_edges_test.csv')

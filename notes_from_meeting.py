@@ -13,6 +13,12 @@
 #   alt, if they are bidirectional or an undirected link, which way does it usually go and why?
 #   what if we consider weighting the edges based off of activity, or is there already correlation between weight and traffic
 
+
+#JUNE 28
+#Maybe program RW to send to multiple neighbors!
+#betweenness, centrality, etc correlate to activity or age or etc?
+#
+
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 img = mpimg.imread('meetingpic.jpg')
