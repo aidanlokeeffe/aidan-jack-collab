@@ -57,48 +57,57 @@ Finally, the clear function takes the place of multiplication by 0.
 
 
 class Package(object):
+    # Constructor
     def __init__(self, tag, hist):
         self.vals = [tag, hist]
     
-    # Okay, so when we do the loop for matrix multiplication, we will need a method that computes the combination of 
-    # however many packages we have
+    # Combines two packages into one
     def incorporate(self, other):
         self.vals[0] += other.vals[0]
         self.vals[1] += other.vals[1]
         return None
     
-    # We might now even need this method, but we'll hold onto it until we have proof that we don't
+    # Turns self into the empty package
     def clear(self):
         self.vals = [list(),list()]
         return None
     
+    # Tells if self is empty
     def is_empty(self):
         return (len(self.vals[0]) == 0) and (len(self.vals[1]) == 0)
 
 
-    # (!!!) We might not even need this function
+    # Records the value j to self's history
     def record(self, j):
         # The empty package should not have a record
         if len(self.vals[0])==0:
             return None
         self.vals[1][0] += [j]
         return None
-        #cannot record when initializing because it will double the history of the first node. Only record when package moves
-    
+
+    # String representation    
     def __str__(self):
         st = "["
         
+        # Check if what we are printing is the empty package
         if len(self.vals[0]) == 0:
             return "[; []]"
         
+        # Write all the IDs
         for _ in range(len(self.vals[0])):
             st += str(self.vals[0][_])+","
+
+        # Write the semicolor separating IDs from histories
         st = st[:-1] + "; "
+
+        # Write each history
         for _ in range(len(self.vals[1])):
             st += str(self.vals[1][_])+","
         st = st[:-1]+"]"
-        return(st)
+
+        return st
     
+    # Representation for printing in lists
     def __repr__(self):
         return str(self)
 
