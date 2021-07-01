@@ -46,6 +46,8 @@ class Experiment(object):
         self.input_matrix(fileName)
         self.choice = choice
 
+        self.executed = False
+
         
         # Initialize dynamical variable
         self.state = Container(self.N)
@@ -56,6 +58,12 @@ class Experiment(object):
         self.actual = []
         self.ages = []
         self.deaths = []
+
+        '''
+        self.extant = set( range(self.load) )
+        self.extinct = set()
+        self.tours = {}
+        '''
 
         self.node_hists = []
         
@@ -107,7 +115,11 @@ class Experiment(object):
         # Add the random messages after propagating
         new_message = Container(self.N)
         new_message.fill(t, self.load)
-        
+
+        '''
+        self.extant |= set( range(t*self.load, (t+1)*self.load) )
+        '''
+
         self.state.incorporate(new_message)
         
         # Record everything as needed
@@ -134,6 +146,8 @@ class Experiment(object):
 
         self.ages.append(survivor_ages)
 
+
+
         next_node_hist = []
         for j in range(self.N):
             try:
@@ -148,6 +162,7 @@ class Experiment(object):
         for t in range(1, self.T):
             self.advance(t)
             #print( "t = " + str(t) + ": " + str(self.state) ) 
+        self.executed = True
         return (self.state, self.attempted, self.actual, self.ages, self.deaths)
 
 
@@ -414,7 +429,33 @@ class Experiment(object):
 
 
 
+    ##############################
+    ##############################
+    # THIS CODE IS JUST FOR TRYING OUT NEW IDEAS
+    ##############################
+    ##############################
 
+    # We need output functions that toss out the transient. So we'll run for 1000 time steps, and then throw out the first 500. This time horizon will
+    # be hard coded 
+
+    def avg_age_steady(self, choice=0):
+        if self.T <= 500:
+            print("Pick a time horizon greater than 500")
+            raise AssertionError
+
+        if not self.executed:
+            print("Execute first")
+            raise AssertionError
+
+        age_sum = 0
+        term_count = 0
+
+        for t in range(500, self.T):
+            for j in range(self.N):
+                age_sum += self.ages[t][j]
+                term_count += int(self.ages[t][j] != 0)
+
+        return age_sum / term_count 
 
 
 

@@ -27,14 +27,15 @@ import random
 from Package import Package
 
 class Container(object):
+    # Constructor
     def __init__(self, N):
-        #self.contents = list(Package([],[]) for _ in range(N))
         self.size = N
         
         self.contents = []
         for i in range(self.size):
             self.contents.append( Package([],[]) )
 
+    # String representation
     def __str__(self):
         st = "{"
         for pkg in self.contents:
@@ -42,6 +43,7 @@ class Container(object):
         st = st[:-2] + "}"
         return st
     
+    # Fill with random contents
     def fill(self, t, load):
         # Get next batch of tags and injection nodes
         tags = iter( range(t*load, (t+1)*load) )
