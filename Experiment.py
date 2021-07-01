@@ -39,6 +39,8 @@ class Experiment(object):
     # SETUP METHODS
     ##############################
     ##############################
+
+    # Constructor
     def __init__(self, fileName, load, T, choice=0):
         # Inputs
         self.load = load
@@ -67,40 +69,42 @@ class Experiment(object):
 
         self.node_hists = []
         
-        # NOTE: THESE WILL BE UPDATED INSIDE OF THE FUNCTION COLLIDER, EXCEPT FOR AT TIME 0
-        # This will always work for attempted
+
+        # Record the initial conditions
+        # For this time step only, we can use the presence of an ID to denote attempted activity
         self.attempted.append( [len(self.state.contents[j].vals[0]) for j in range(self.N)] )
-        # We need to apply collision first for this to work
+
+        # On the first time step, attempted and actual are equal
         self.actual.append([len(self.state.contents[j].vals[0]) for j in range(self.N)]) 
-        # This should also be computed only after collision
+
         self.ages.append([len(self.state.contents[j].vals[1]) for j in range(self.N)])
-        # This will be an array of arrays of dead packages, with one inner array per timestep            
+        
+        # There are no deaths on the first time step         
         self.deaths.append([]) 
 
+        # Record the IDs present at each node, otherwise, put -1
         next_node_hist = []
         for j in range(self.N):
             try:
                 next_node_hist.append( self.state.contents[j].vals[0][0] )
             except IndexError:
-                next_node_hist.append(None)
+                next_node_hist.append(-1)
         self.node_hists.append( next_node_hist )
         
+        # Apply user's choice of propagation function
         if choice==0:
             self.propagate = self.state.RW_propagate
         else:
             self.propagate = self.state.IS_propagate
 
 
+    # Read the csv containing the adjacency matrix, and set a few more object attributes
     def input_matrix(self, inFile):
         matrix = np.genfromtxt(inFile, delimiter = ',')
         if math.isnan(matrix[0][0]):
             matrix = matrix[1:,1:]
         self.adj = matrix
         self.N = len(matrix)
-        return None
-
-
-
 
 
     ##############################
@@ -108,6 +112,8 @@ class Experiment(object):
     # DYNAMIC METHODS
     ##############################
     ##############################
+
+    # This method takes the experiment forward one time step, and records all of the appropriate stuff to the class attributes
     def advance(self, t):
         # Propagate the messages according to the chosen rule
         self.propagate(self.adj)
@@ -115,14 +121,14 @@ class Experiment(object):
         # Add the random messages after propagating
         new_message = Container(self.N)
         new_message.fill(t, self.load)
+        self.state.incorporate(new_message)
 
         '''
         self.extant |= set( range(t*self.load, (t+1)*self.load) )
         '''
 
-        self.state.incorporate(new_message)
         
-        # Record everything as needed
+        # Record attempted activity
         self.attempted.append( [len(self.state.contents[j].vals[0]) for j in range(self.N) ] )
 
         # Perform the collision, and record deaths
@@ -135,19 +141,20 @@ class Experiment(object):
                 self.state.clear(j)
         self.deaths.append(doomed)
         
+        # Record actual activity
         self.actual.append( [len(self.state.contents[j].vals[0]) for j in range(self.N) ] )
 
+        # Record the ages of those messages that survive
         survivor_ages = []
         for j in range(self.N):
             try:
                 survivor_ages.append( len(self.state.contents[j].vals[1][0]) )
             except IndexError:
                 survivor_ages.append(0)
-
         self.ages.append(survivor_ages)
 
 
-
+        # Record the IDs present at each node after collision
         next_node_hist = []
         for j in range(self.N):
             try:
@@ -156,16 +163,13 @@ class Experiment(object):
                 next_node_hist.append(None)
         self.node_hists.append( next_node_hist )
 
+
+    # Advance the experiment up to the time horizon, self.T. Returns all of the recordings 
     def execute(self):
-        #print("HERE ARE THE STATES")
-        #print( "t = 0: " + str(self.state) )
         for t in range(1, self.T):
             self.advance(t)
-            #print( "t = " + str(t) + ": " + str(self.state) ) 
         self.executed = True
         return (self.state, self.attempted, self.actual, self.ages, self.deaths)
-
-
 
 
     ##############################
@@ -205,14 +209,6 @@ class Experiment(object):
         return age_sum / num_deaths
 
 
-
-
-
-
-
-
-
-
     # Death edge stuff
     def timewise_death_edges(self, t):
         out = []
@@ -241,8 +237,6 @@ class Experiment(object):
                 except KeyError:
                     out[edge] = 1
         return out
-
-
 
 
     ##############################
@@ -343,7 +337,6 @@ class Experiment(object):
             out_file.write( str(t) + ", " + str(time_maxes[t]) + "\n" )
 
         out_file.close()
-
 
 
     # Death edge outputs
