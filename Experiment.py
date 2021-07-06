@@ -61,11 +61,16 @@ class Experiment(object):
         self.ages = []
         self.deaths = []
 
-        '''
+        # Recordings related to extinction and visitation
+
+        # Since there are no deaths at time 0, we know that each ID is extant
         self.extant = set( range(self.load) )
+        
+        # Likewise, there are no extinct messages at the first time step
         self.extinct = set()
-        self.tours = {}
-        '''
+
+        # This will be a dictionary. The keys will be IDs, and the values will be sets containing all the nodes visited by any copy with that ID
+        self.visits = {}
 
         self.node_hists = []
         
@@ -77,10 +82,25 @@ class Experiment(object):
         # On the first time step, attempted and actual are equal
         self.actual.append([len(self.state.contents[j].vals[0]) for j in range(self.N)]) 
 
+        # Record ages
         self.ages.append([len(self.state.contents[j].vals[1]) for j in range(self.N)])
         
         # There are no deaths on the first time step         
         self.deaths.append([]) 
+
+        # Record visits
+        for j in range(self.N):
+            num_tags = len(self.state.contents[j].vals[0])
+            for k in range(num_tags):
+                try:
+                    self.visits[ self.state.contents[j].vals[0][k] ] |= set( self.state.contents[j].vals[1][k] )
+                except KeyError:
+                    self.visits[ self.state.contents[j].vals[0][k] ] = set( self.state.contents[j].vals[1][k] )
+
+
+
+
+
 
         # Record the IDs present at each node, otherwise, put -1
         next_node_hist = []
@@ -123,11 +143,18 @@ class Experiment(object):
         new_message.fill(t, self.load)
         self.state.incorporate(new_message)
 
-        '''
+        # Put all the new IDs in the list of extant IDs
         self.extant |= set( range(t*self.load, (t+1)*self.load) )
-        '''
 
-        
+        # Record visits
+        for j in range(self.N):
+            num_tags = len(self.state.contents[j].vals[0])
+            for k in range(num_tags):
+                try:
+                    self.visits[ self.state.contents[j].vals[0][k] ] |= set( self.state.contents[j].vals[1][k] )
+                except KeyError:
+                    self.visits[ self.state.contents[j].vals[0][k] ] = set( self.state.contents[j].vals[1][k] )
+
         # Record attempted activity
         self.attempted.append( [len(self.state.contents[j].vals[0]) for j in range(self.N) ] )
 
@@ -140,6 +167,18 @@ class Experiment(object):
                 doomed.append( Package(arg1, arg2) )
                 self.state.clear(j)
         self.deaths.append(doomed)
+
+        # Get extinct IDs
+        currently_alive = set()
+        for j in range(self.N):
+            currently_alive |= set( self.state.contents[j].vals[0] )
+
+        newly_extinct = self.extant - currently_alive
+        self.extinct |= newly_extinct
+        self.extant -= self.extinct
+
+
+
         
         # Record actual activity
         self.actual.append( [len(self.state.contents[j].vals[0]) for j in range(self.N) ] )
