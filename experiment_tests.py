@@ -10,7 +10,20 @@ test_exp = Experiment("testadjmat.csv", 2, 10, choice=1)
 
 T = test_exp.T
 
+
+#print("THESE ARE THE STATES OVER TIME, BEFORE COLLISION")
 test_exp.execute()
+
+print()
+test_dict = test_exp.ID_trajectories
+keys = test_dict.keys()
+for key in keys:
+	print(str(key) + ": " + str(test_dict[key]))
+
+
+
+
+
 
 #print()
 #for i in range(len(test_exp.deaths)):
@@ -23,8 +36,9 @@ test_exp.execute()
 #print()
 #print(test_exp.cumulative_death_edges(0, T))
 
+'''
 print()
-print("ARRGH, HERE BE THE DEATHS!!!!!!")
+print("HERE ARE DEATHS")
 for t in range(T):
 	print("t = " + str(t) +": " + str(test_exp.deaths[t]))
 
@@ -56,7 +70,7 @@ print( test_exp.average_death_age() )
 print()
 print("NODE HISTS")
 print(test_exp.node_hists)
-
+'''
 
 
 

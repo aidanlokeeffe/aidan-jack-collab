@@ -62,15 +62,16 @@ class Experiment(object):
         self.deaths = []
 
         # Recordings related to extinction and visitation
-
         # Since there are no deaths at time 0, we know that each ID is extant
         self.extant = set( range(self.load) )
         
         # Likewise, there are no extinct messages at the first time step
         self.extinct = set()
 
-        # This will be a dictionary. The keys will be IDs, and the values will be sets containing all the nodes visited by any copy with that ID
-        self.visits = {}
+        # This will be a dictionary. The keys will be IDs, and the values will
+        # be dictionaries, who in turn have keys as times and values as 
+        # sets of nodes visited
+        self.ID_trajectories = {}
 
         self.node_hists = []
         
@@ -89,20 +90,22 @@ class Experiment(object):
         self.deaths.append([]) 
 
         # Record visits
+        # Put a function "record_visits" here.
+        # Also, this function will need to do something different, so just hold on man. Hold on
+
+        # Since this is the initial condition, no messages have been spread
+        # yet, so every ID is in one and only one place
         for j in range(self.N):
             num_tags = len(self.state.contents[j].vals[0])
             for k in range(num_tags):
-                try:
-                    self.visits[ self.state.contents[j].vals[0][k] ] |= set( self.state.contents[j].vals[1][k] )
-                except KeyError:
-                    self.visits[ self.state.contents[j].vals[0][k] ] = set( self.state.contents[j].vals[1][k] )
-
-
-
-
+                key = self.state.contents[j].vals[0][k]
+                self.ID_trajectories[key] = {}
+                self.ID_trajectories[key][0] = set(self.state.contents[j].vals[1][k])
 
 
         # Record the IDs present at each node, otherwise, put -1
+
+        # Put a function "record_node_hists" here
         next_node_hist = []
         for j in range(self.N):
             try:
@@ -146,19 +149,45 @@ class Experiment(object):
         # Put all the new IDs in the list of extant IDs
         self.extant |= set( range(t*self.load, (t+1)*self.load) )
 
-        # Record visits
+
+        # Record ID_trajectories
+        # First, we need the current positions for each ID
+        current_positions = {}
         for j in range(self.N):
             num_tags = len(self.state.contents[j].vals[0])
             for k in range(num_tags):
+                key = self.state.contents[j].vals[0][k]
                 try:
-                    self.visits[ self.state.contents[j].vals[0][k] ] |= set( self.state.contents[j].vals[1][k] )
+                    current_positions[key] |= set( self.state.contents[j].vals[1][k] )
                 except KeyError:
-                    self.visits[ self.state.contents[j].vals[0][k] ] = set( self.state.contents[j].vals[1][k] )
+                    current_positions[key] = set( self.state.contents[j].vals[1][k] )
+
+        # Once we have all of the current positions for each ID, we can compare with the 
+        # cumulative visits, and if there are any new nodes visited, we take note of that
+        keys = current_positions.keys()
+        for key in keys:
+            try:
+                prev_time = max( self.ID_trajectories[key].keys() )
+            except KeyError:
+                # This means that the ID is new, so we set
+                self.ID_trajectories[key] = {}
+                self.ID_trajectories[key][t] = current_positions[key]
+                # Because the ID didn't exist before, we have recorded all we need to
+                continue
+
+            if len(current_positions[key] - self.ID_trajectories[key][prev_time]) > 0:
+                self.ID_trajectories[key][t] = current_positions[key] | self.ID_trajectories[key][prev_time]
+
+
+
 
         # Record attempted activity
         self.attempted.append( [len(self.state.contents[j].vals[0]) for j in range(self.N) ] )
 
+        #print(self.state)
+
         # Perform the collision, and record deaths
+        # Need a function "perform_collision"
         doomed = []
         for j in range(self.N):
             arg1 = self.state.contents[j].vals[0]
@@ -169,6 +198,7 @@ class Experiment(object):
         self.deaths.append(doomed)
 
         # Get extinct IDs
+        # Need a function "determine_extant"
         currently_alive = set()
         for j in range(self.N):
             currently_alive |= set( self.state.contents[j].vals[0] )
@@ -177,6 +207,8 @@ class Experiment(object):
         self.extinct |= newly_extinct
         self.extant -= self.extinct
 
+        print("Extint at time " + str(t) +": " + str(self.extinct))
+
 
 
         
@@ -184,6 +216,7 @@ class Experiment(object):
         self.actual.append( [len(self.state.contents[j].vals[0]) for j in range(self.N) ] )
 
         # Record the ages of those messages that survive
+        # Need a function "record_survivor_ages"
         survivor_ages = []
         for j in range(self.N):
             try:
@@ -194,6 +227,7 @@ class Experiment(object):
 
 
         # Record the IDs present at each node after collision
+        # Need a function "record_node_hists"
         next_node_hist = []
         for j in range(self.N):
             try:
