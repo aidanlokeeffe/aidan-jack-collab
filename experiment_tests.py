@@ -20,6 +20,17 @@ keys = test_dict.keys()
 for key in keys:
 	print(str(key) + ": " + str(test_dict[key]))
 
+print()
+test_extinct = test_exp.extinction_times
+keys = test_extinct.keys()
+for key in keys:
+	print( str(key) + ": " + str(test_extinct[key]) )
+
+test_arr = test_exp.make_visitation_data()
+for row in test_arr:
+	print(row)
+
+print(test_exp.summarize_visitation_data())
 
 
 

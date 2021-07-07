@@ -45,11 +45,18 @@ class Experiment(object):
         # Inputs
         self.load = load
         self.T = T
-        self.input_matrix(fileName)
+
+        if str(type(fileName)) == "<class 'str'>":
+            self.input_matrix(fileName)
+        else:
+            # The other case is that the adjmat is pased as an array
+            self.adj = inFile
+            self.N = len(inFile)
+
+
         self.choice = choice
 
         self.executed = False
-
         
         # Initialize dynamical variable
         self.state = Container(self.N)
@@ -72,6 +79,7 @@ class Experiment(object):
         # be dictionaries, who in turn have keys as times and values as 
         # sets of nodes visited
         self.ID_trajectories = {}
+        self.extinction_times = {}
 
         self.node_hists = []
         
@@ -204,6 +212,11 @@ class Experiment(object):
             currently_alive |= set( self.state.contents[j].vals[0] )
 
         newly_extinct = self.extant - currently_alive
+
+        for tag in newly_extinct:
+            self.extinction_times[tag] = t
+
+
         self.extinct |= newly_extinct
         self.extant -= self.extinct
 
@@ -250,6 +263,73 @@ class Experiment(object):
     # DATA FORMATTING METHODS
     ##############################
     ##############################
+
+    # Extinction time stuff
+    def get_max_visitation_time(self, tag):
+        return( max( self.ID_trajectories[tag].keys() ) )
+
+    def get_max_visitation_age(self, tag):
+        t = self.get_max_visitation_time(tag)
+        return t - (tag // self.N) 
+
+    def get_visitation(self, tag):
+        t = self.get_max_visitation_time(tag)
+        return len(self.ID_trajectories[tag][t]) / self.N
+
+    # In English, the overstay of a tag is the length of time between the tag's first time of maximum visitation
+    # and the time of its extinction
+    def overstay(self, tag):
+        return self.extinction_times[tag] - self.get_max_visitation_time(tag)
+
+    def make_visitation_data(self):
+        # Check that simulation was executed
+        if not self.executed:
+            print("Do not make the visitation data until the simulation is executed.")
+            raise AssertionError
+
+        out = []
+        for j in sorted(self.extinction_times.keys()):
+            out.append( [ j, self.get_visitation(j), self.get_max_visitation_age(j), self.overstay(j) ] )
+        return out
+
+    def summarize_visitation_data(self):
+        visitation_data = self.make_visitation_data()
+        
+        out = [["Quantile", "Visitation", "Age of Maximum Visitation", "Overstay"],
+               ["Min"],
+               ["Q1"],
+               ["Med"],
+               ["Q3"],
+               ["Max"],
+               ["Mean"]]
+        visitation = []
+        age_at_max = []
+        overstay = []
+        M = len(visitation_data)
+        print(visitation_data)
+        for i in range(M):
+            print(i)
+            visitation.append(visitation_data[i][1])
+            age_at_max.append(visitation_data[i][2])
+            overstay.append(visitation_data[i][3])
+
+        vals = []
+        vals.append( list(np.quantile(visitation, [0, 0.25, 0.5, 0.75, 1])) )
+        vals.append( list(np.quantile(age_at_max, [0, 0.25, 0.5, 0.75, 1])) )
+        vals.append( list(np.quantile(overstay, [0, 0.25, 0.5, 0.75, 1])) )
+
+        vals[0].append(np.mean(visitation))
+        vals[1].append(np.mean(age_at_max))
+        vals[2].append(np.mean(overstay))
+
+        for i in range(6):
+            for j in range(3):
+                out[i+1].append(vals[j][i])
+
+        return out
+
+
+
 
     # Age average stuff
     def timewise_average_age(self):
