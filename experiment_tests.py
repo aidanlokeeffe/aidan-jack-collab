@@ -8,6 +8,7 @@ import Barchart_animator
 import threed_plotter 
 
 
+<<<<<<< Updated upstream
 nodes = 91
 prob = .2
 T=10000
@@ -28,6 +29,9 @@ np.savetxt("testadjmat.csv", matrix, delimiter=',')
 
 
 test_exp = Experiment("testadjmat.csv", nodes//10, T, choice)
+=======
+test_exp = Experiment("mouseunweighted.csv", 22, 1000, choice=0)
+>>>>>>> Stashed changes
 
 T = test_exp.T
 

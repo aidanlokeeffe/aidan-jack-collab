@@ -60,10 +60,21 @@ class Container(object):
                 for matnav in range(self.size):
                     if adj[pkg.vals[1][0][-1]][matnav] > 0:
                         destinations.append(matnav)
+<<<<<<< Updated upstream
             #randomly select a node to go to
             #send the message to that node
                 pkg.vals[1][0].append(random.choice(destinations))
         #putting packages into the container in order from the buffer
+=======
+
+                # Randomly select a node to go to, and send the message to that node
+                if len(destinations)==0:
+                    pass
+                else:
+                    pkg.vals[1][0].append(random.choice(destinations))
+
+        # Put packages into self.contents in order from the buffer
+>>>>>>> Stashed changes
         for pkg in buffer:
             if pkg.vals[0] != []:
                 j=pkg.vals[1][0][-1]
