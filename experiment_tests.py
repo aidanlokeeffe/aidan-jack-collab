@@ -30,9 +30,7 @@ test_arr = test_exp.make_visitation_data()
 for row in test_arr:
 	print(row)
 
-a = test_exp.summarize_visitation_data()
-for row in a:
-	print(row)
+print(test_exp.summarize_visitation_data())
 
 
 
