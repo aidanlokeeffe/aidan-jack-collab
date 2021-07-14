@@ -6,6 +6,53 @@ import random
 import time
 import numpy as np
 
+# As it exists, this program is shit
+
+def time_execute(exp):
+	t0 = time.time()
+	exp.execute()
+	tf = time.time()
+	return tf-t0
+
+def main():
+	mouse_times_RW = []
+	monkey91_times_RW = []
+	cocomac_times_RW = []
+
+	mouse_times_IS = []
+	monkey91_times_IS = []
+	cocomac_times_IS = []
+	for _ in range(10):
+		# (fileName, load, T, choice=0)
+		mouse_exp_RW = experiment("mouseunweighted.csv", 21, 1000, 0)
+		monkey91_exp_RW = experiment("monkey91.csv", 9, 1000, 0)
+		cocomac_exp_RW = experiment()
+		mouse_exp_IS = experiment("mouseunweighted.csv", 21, 1000, 1)
+		monkey91_exp_IS = experiment("monkey91.csv", 9, 1000, 1)
+		cocomac_exp_IS = experiment()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''
 def make_N_L_pairs():
 	out = []
 	for N in [10, 50, 100, 200, 400]:
@@ -46,13 +93,13 @@ def get_runtime_of_execute(N,L,choice):
 
 def main():
 	
-	''' CHECKING THAT make_N_L_pairs WORKS
+	 CHECKING THAT make_N_L_pairs WORKS
 	pairs = make_N_L_pairs()
 	for row in pairs:
 		print(row)
-	IT DOES '''
+	IT DOES 
 
-	'''
+	
 	results = [ ["(N,L)", "ONE", 0.01, 0.05, 0.1, 0.2, 0.5],
 	            [10],
 	            [50],
@@ -68,7 +115,7 @@ def main():
 	print("Choice: " + str(choice))
 	for row in results:
 		print(row)
-	'''
+	
 
 	print()
 
@@ -89,3 +136,4 @@ def main():
 		print(row)
 
 main()
+'''
