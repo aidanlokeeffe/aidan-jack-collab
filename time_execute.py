@@ -18,33 +18,21 @@ def main():
 	mouse_times_RW = []
 	monkey91_times_RW = []
 	cocomac_times_RW = []
+
 	mouse_times_IS = []
 	monkey91_times_IS = []
 	cocomac_times_IS = []
-	for _ in range(50):
+	for _ in range(10):
 		# (fileName, load, T, choice=0)
-		mouse_exp_RW = Experiment("mouseunweighted.csv", 21, 1000, 0)
-		monkey91_exp_RW = Experiment("monkey91.csv", 9, 1000, 0)
-		#cocomac_exp_RW = experiment()
-		mouse_exp_IS = Experiment("mouseunweighted.csv", 21, 1000, 1)
-		monkey91_exp_IS = Experiment("monkey91.csv", 9, 1000, 1)
-		#cocomac_exp_IS = experiment()
+		mouse_exp_RW = experiment("mouseunweighted.csv", 21, 1000, 0)
+		monkey91_exp_RW = experiment("monkey91.csv", 9, 1000, 0)
+		cocomac_exp_RW = experiment()
+		mouse_exp_IS = experiment("mouseunweighted.csv", 21, 1000, 1)
+		monkey91_exp_IS = experiment("monkey91.csv", 9, 1000, 1)
+		cocomac_exp_IS = experiment()
 
-		mouse_times_RW.append(time_execute(mouse_exp_RW))
-		monkey91_times_RW.append(time_execute(monkey91_exp_RW))
-		#cocomac_times_RW.append(time_execute(cocomac_times_RW))
-		mouse_times_IS.append(time_execute(mouse_exp_IS))
-		monkey91_times_IS.append(time_execute(monkey91_exp_IS))
-		#cocomac_times_IS.append(time_execute(cocomac_times_IS))
 
-	print("On average, RW on mouse takes " + str( np.mean(mouse_times_RW) ) + " seconds to execute.")
-	print("On average, RW monkey91 takes " + str( np.mean(monkey91_times_RW) ) + " seconds to execute.")
-	#print("On average, RW cococac takes " + str( np.mean(cocomac_times_RW) ) + " seconds to execute.")
-	print("On average, IS on mouse takes " + str( np.mean(mouse_times_IS) ) + " seconds to execute.")
-	print("On average, IS monkey91 takes " + str( np.mean(monkey91_times_IS) ) + " seconds to execute.")
-	#print("On average, IS cococac takes " + str( np.mean(cocomac_times_IS) ) + " seconds to execute.")
 
-main()
 
 
 
