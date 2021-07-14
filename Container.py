@@ -92,7 +92,8 @@ class Container(object):
                         destinations.append(matnav)
 
                 # Randomly select a node to go to, and send the message to that node
-                pkg.vals[1][0].append(random.choice(destinations))
+                if len(destinations)!= 0:
+                    pkg.vals[1][0].append(random.choice(destinations))
 
         # Put packages into self.contents in order from the buffer
         for pkg in buffer:
