@@ -138,6 +138,7 @@ class Experiment(object):
         self.N = len(matrix)
 
 
+
     ##############################
     ##############################
     # DYNAMIC METHODS
@@ -220,7 +221,7 @@ class Experiment(object):
         self.extinct |= newly_extinct
         self.extant -= self.extinct
 
-        print("Extint at time " + str(t) +": " + str(self.extinct))
+        #print("Extint at time " + str(t) +": " + str(self.extinct))
 
 
 
@@ -292,23 +293,36 @@ class Experiment(object):
             out.append( [ j, self.get_visitation(j), self.get_max_visitation_age(j), self.overstay(j) ] )
         return out
 
-    def summarize_visitation_data(self):
+    def summarize_visitation_data(self, j_min=0):
+        # Get the visitation data
         visitation_data = self.make_visitation_data()
-        
-        out = [["Quantile", "Visitation", "Age of Maximum Visitation", "Overstay"],
-               ["Min"],
-               ["Q1"],
-               ["Med"],
-               ["Q3"],
-               ["Max"],
-               ["Mean"]]
+
+        # Filter the visitation data for j >= j_min
+        visitation_data = list(filter(lambda row: row[0] >= j_min, visitation_data))
+
+        '''
+        Note that these are the headers of the output, but I'm not including 
+        them in the output because it's 10 more values to store per ensemble member
+        [["Quantile", "Visitation", "Age of Maximum Visitation", "Overstay"],
+        ["Min"],
+        ["Q1"],
+        ["Med"],
+        ["Q3"],
+        ["Max"],
+        ["Mean"]]
+        '''
+        out = [[],
+               [],
+               [],
+               [],
+               [],
+               []]
         visitation = []
         age_at_max = []
         overstay = []
         M = len(visitation_data)
-        print(visitation_data)
+        
         for i in range(M):
-            print(i)
             visitation.append(visitation_data[i][1])
             age_at_max.append(visitation_data[i][2])
             overstay.append(visitation_data[i][3])
@@ -324,7 +338,7 @@ class Experiment(object):
 
         for i in range(6):
             for j in range(3):
-                out[i+1].append(vals[j][i])
+                out[i].append(vals[j][i])
 
         return out
 
