@@ -20,6 +20,9 @@ from matplotlib import pyplot as plt
 #makeUndirected(matrix)
 #
 #np.savetxt("undirmouse.csv", matrix, delimiter=",")
+#
+#
+#
 
 def main():
 	#a = Experiment(fileName, load, T, choice=0):
@@ -211,10 +214,11 @@ def main():
 	avg = summy/count
 	print("UNDIR mouse IS " + str(avg))	
 	undirMouseIsAges = (ages, avg)
-	monkey_experiment_rw.write_verif_output_2("monkey_rw_verif_2.csv")
-	monkey_experiment_is.write_verif_output_2("monkey_is_verif_2.csv")
-	mouse_experiment_rw.write_verif_output_2("mouse_rw_verif_2.csv")
-	mouse_experiment_is.write_verif_output_2("mouse_is_verif_2.csv")
+
+	#monkey_experiment_rw.write_verif_output_2("monkey_rw_verif_2.csv")
+	#monkey_experiment_is.write_verif_output_2("monkey_is_verif_2.csv")
+	#mouse_experiment_rw.write_verif_output_2("mouse_rw_verif_2.csv")
+	#mouse_experiment_is.write_verif_output_2("mouse_is_verif_2.csv")
 
 	bins = [x for x in range(50)]
 
@@ -295,6 +299,5 @@ def main():
 
 
 main()
-
 
 

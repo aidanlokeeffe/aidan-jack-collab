@@ -88,11 +88,11 @@ class Experiment(object):
         self.ages.append(survivor_ages)
 
     def execute(self):
-        print("HERE ARE THE STATES")
-        print( "t = 0: " + str(self.state) )
+        #print("HERE ARE THE STATES")
+        #print( "t = 0: " + str(self.state) )
         for t in range(1, self.T):
             self.advance(t)
-            print( "t = " + str(t) + ": " + str(self.state) ) 
+            #print( "t = " + str(t) + ": " + str(self.state) ) 
         return (self.state, self.attempted, self.actual, self.ages, self.deaths)
 
     ##############################
@@ -217,6 +217,8 @@ class Experiment(object):
         out_file.close()
         return None
 
+        
+
 
 
     # Average age outputs
@@ -250,6 +252,29 @@ class Experiment(object):
         # Write the rest of the data
         for t in range(self.T):
             out_file.write(str(t) + ", " + str(time_averages[t]) + "\n")
+
+        out_file.close()
+
+    def write_verif_output_1(self, out_name):
+        out_file = open(out_name, "w")
+
+        # Write the first line
+        out_file.write( "Time of Death, Message ID, Age at Death, Place of Death, Place Before Death\n" )
+
+        for t in range(self.T):
+            tally = self.deaths[t]
+            for pkg in tally:
+                N = len(pkg.vals[0])
+                for i in range(N):
+                    msg_id = str( pkg.vals[0][i] )
+                    age = str( len( pkg.vals[1][i] ) )
+                    place_of_death = str( pkg.vals[1][i][-1] )
+                    try:
+                        send_to_death = str( pkg.vals[1][i][-2] )
+                    except IndexError:
+                        send_to_death = str( pkg.vals[1][i][-1] )
+
+                    out_file.write( str(t) + ", " + msg_id + ", " + age + ", " + place_of_death + ", " + send_to_death + "\n" )
 
         out_file.close()
 
