@@ -220,7 +220,7 @@ class Experiment(object):
         self.extinct |= newly_extinct
         self.extant -= self.extinct
 
-        print("Extint at time " + str(t) +": " + str(self.extinct))
+        #print("Extint at time " + str(t) +": " + str(self.extinct))
 
 
 
