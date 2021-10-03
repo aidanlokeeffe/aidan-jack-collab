@@ -32,6 +32,61 @@ for row in test_arr:
 
 print(test_exp.summarize_visitation_data())
 
+print("Visitation summary")
+a = test_exp.nodewise_visitation_summary()
+for key in a.keys():
+	print(str(key) + ": " + str(a[key]))
+
+print("\nOverstay summary")
+b = test_exp.nodewise_overstay_summary()
+for key in b.keys():
+	print(str(key) + ": " + str(b[key]))
+
+print("\nInfluence values")
+b = test_exp.influence_values()
+for key in b.keys():
+	print(str(key) + ": " + str(b[key]))
+
+print("\nRedundancy values")
+b = test_exp.redundancy_values()
+for key in b.keys():
+	print(str(key) + ": " + str(b[key]))
+
+print("\nTesting the function make_structure_activity_dictionary_1")
+b = test_exp.make_structure_activity_dictionary_1()
+for k in b.keys():
+	print(str(k) + ": " + str(b[k]))
+
+print("\nTesting write_structure_activity_1_csv")
+test_exp.write_structure_activity_1_csv("st_act_1_test.csv")
+
+print("\nTesting make_structure_dictionary_1")
+b = test_exp.make_structure_dictionary_1()
+for k in b.keys():
+	print( str(k) + ": " + str(b[k]) )
+
+print("\nTesting write_structure_1_csv")
+test_exp.write_structure_1_csv("test_write_structure.csv")
+
+print("\nTesting nodewise_age_at_death")
+b = test_exp.nodewise_age_at_death(2)
+for k in b.keys():
+	print( str(k) + ": " + str(b[k]))
+
+print("\nTesting age_at_death_values")
+b = test_exp.age_at_death_values(2)
+for k in b.keys():
+	print( str(k) + ": " + str(b[k]) )
+
+print("\n testing nodewise_avg_activation")
+b = test_exp.nodewise_avg_activation(2)
+for k in b.keys():
+	print( str(k) + ": " + str(b[k]) )
+
+print("\n testing nodewise_avg_attempted")
+b = test_exp.nodewise_avg_attempted(2)
+for k in b.keys():
+	print( str(k) + ": " + str(b[k]) )
 
 
 

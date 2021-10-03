@@ -21,14 +21,14 @@ def main():
 	mouse_times_IS = []
 	monkey91_times_IS = []
 	cocomac_times_IS = []
-	for _ in range(50):
+	for _ in range(20):
 		# (fileName, load, T, choice=0)
 		mouse_exp_RW = Experiment("mouseunweighted.csv", 21, 1000, 0)
 		monkey91_exp_RW = Experiment("monkey91.csv", 9, 1000, 0)
-		cocomac_exp_RW = Experiment("cocoadj.csv", , 1000, 0)
+		cocomac_exp_RW = Experiment("cocoadj.csv", 18, 1000, 0)
 		mouse_exp_IS = Experiment("mouseunweighted.csv", 21, 1000, 1)
 		monkey91_exp_IS = Experiment("monkey91.csv", 9, 1000, 1)
-		cocomac_exp_IS = Experiment("cocoadj.csv", , 1000, 1)
+		cocomac_exp_IS = Experiment("cocoadj.csv", 18, 1000, 1)
 
 		mouse_times_RW.append(time_execute(mouse_exp_RW))
 		monkey91_times_RW.append(time_execute(monkey91_exp_RW))

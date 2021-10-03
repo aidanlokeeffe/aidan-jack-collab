@@ -27,9 +27,18 @@ won't say too much on these here, as that part of the code is currently
 undergoing a lot of changes.
 '''
 
+'''
+HEY!!! YOU HAVE UNFINISHED WORK TO DO IN THIS FILE
+
+'''
+
+
+
+
 
 import numpy as np
 import math
+import networkx as nx
 from Container import Container
 from Package import Package
 
@@ -53,6 +62,9 @@ class Experiment(object):
             self.adj = inFile
             self.N = len(inFile)
 
+        self.digraph = nx.DiGraph()
+        self.digraph.add_nodes_from(list(range(self.N)))
+        self.digraph.add_edges_from([(i,j) for i in range(self.N) for j in range(self.N) if self.adj[i][j]])
 
         self.choice = choice
 
@@ -80,6 +92,19 @@ class Experiment(object):
         # sets of nodes visited
         self.ID_trajectories = {}
         self.extinction_times = {}
+
+        # Note, 
+        self.pre_injection_activation = {j:[] for j in range(self.N)}
+
+        # We will store all of the IDs that start at each node
+        self.node_injections = {j: set() for j in range(self.N)}
+        
+        for j in range(self.N):
+            M = len( self.state.contents[j].vals[0] )
+            for k in range(M):
+                ID = self.state.contents[j].vals[0][k]
+                injection_site = self.state.contents[j].vals[1][k][0]
+                self.node_injections[injection_site] |= set([ID])
 
         self.node_hists = []
         
@@ -110,8 +135,6 @@ class Experiment(object):
                 self.ID_trajectories[key] = {}
                 self.ID_trajectories[key][0] = set(self.state.contents[j].vals[1][k])
 
-
-        # Record the IDs present at each node, otherwise, put -1
 
         # Put a function "record_node_hists" here
         next_node_hist = []
@@ -152,7 +175,19 @@ class Experiment(object):
         # Add the random messages after propagating
         new_message = Container(self.N)
         new_message.fill(t, self.load)
+
+        # Record the new injections 
+        for j in range(self.N):
+            M = len( new_message.contents[j].vals[0] )
+            for k in range(M):
+                ID = new_message.contents[j].vals[0][k]
+                injection_site = new_message.contents[j].vals[1][k][0]
+                self.node_injections[injection_site] |= set([ID])
+
+
         self.state.incorporate(new_message)
+
+
 
         # Put all the new IDs in the list of extant IDs
         self.extant |= set( range(t*self.load, (t+1)*self.load) )
@@ -220,7 +255,7 @@ class Experiment(object):
         self.extinct |= newly_extinct
         self.extant -= self.extinct
 
-        print("Extint at time " + str(t) +": " + str(self.extinct))
+        #print("Extint at time " + str(t) +": " + str(self.extinct))
 
 
 
@@ -264,6 +299,9 @@ class Experiment(object):
     ##############################
     ##############################
 
+
+
+
     # Extinction time stuff
     def get_max_visitation_time(self, tag):
         return( max( self.ID_trajectories[tag].keys() ) )
@@ -280,6 +318,107 @@ class Experiment(object):
     # and the time of its extinction
     def overstay(self, tag):
         return self.extinction_times[tag] - self.get_max_visitation_time(tag)
+
+    # This will return a dictionary of the form {node j: (q0 visitation, q.25 visitation, ..., q1 visitation, mean visitation)}
+    # The quantity called influence is the last component of each tuple: the mean of the visitation distribution
+    def nodewise_visitation_summary(self, t_min = 0):
+        # Make the dictionary
+        out = {}
+
+        # Only use things in node_injections[j] & self.extinct
+        for j in range(self.N):
+            dsbn = []
+            for tag in self.node_injections[j] & self.extinct & set(range(t_min*self.load, (self.T+1)*self.load)):
+                dsbn.append( self.get_visitation(tag) )
+            if len(dsbn) == 0:
+                out[j] = (0,0,0,0,0,0)
+                continue
+            quantiles = np.quantile(dsbn, [0, 0.25, 0.5, 0.75, 1])
+            out[j] = tuple( list(quantiles) + [np.mean(dsbn)] )
+        return out
+
+    # This does the same as the above, except it gives the overstay distribution instead of the visitation distribution
+    def nodewise_overstay_summary(self, t_min=0):
+        # Make the dictionary
+        out = {}
+        
+        # Only use things in node_injections[j] & self.extinct
+        for j in range(self.N):
+            dsbn = []
+            for tag in self.node_injections[j] & self.extinct & set(range(t_min*self.load, (self.T+1)*self.load)):
+                dsbn.append( self.overstay(tag) )
+            if len(dsbn) == 0:
+                out[j] = (0,0,0,0,0,0)
+                continue
+            quantiles = np.quantile(dsbn, [0, 0.25, 0.5, 0.75, 1])
+            out[j] = tuple( list(quantiles) + [np.mean(dsbn)] )
+        return out
+
+    def nodewise_age_at_death(self, t_min=0):
+        # make the dictionary
+        out = {j:[] for j in range(self.N)}
+
+        for tally in self.deaths[t_min:]:
+            for pkg in tally:
+                M = len(pkg.vals[0])
+                for i in range(M):
+                    out[pkg.vals[1][i][0]].append(len(pkg.vals[1][i]))
+
+        return out
+
+
+
+    def influence_values(self, t_min=0):
+        a = self.nodewise_visitation_summary(t_min)
+        #print("influence", a)
+        return {j:a[j][5] for j in range(self.N)}
+
+    def redundancy_values(self, t_min=0):
+        a = self.nodewise_overstay_summary(t_min)
+        #print("overstay", a)
+        return {j:a[j][5] for j in range(self.N)}
+
+    def age_at_death_values(self,t_min=0):
+        a = self.nodewise_age_at_death(t_min)
+        #print("age at death", a)
+        out = {}
+        for j in range(self.N):
+            if len(a[j])==0:
+                out[j] = 0
+                continue
+            out[j] = np.mean(a[j])
+        return out
+
+
+    def nodewise_avg_activation(self, t_min=0):
+        return {j: np.mean([self.actual[t][j] for t in range(t_min, self.T)]) for j in range(self.N)}
+
+    def nodewise_avg_attempted(self, t_min=0):
+        return {j: np.mean([self.attempted[t][j] for t in range(t_min, self.T)]) for j in range(self.N)}
+
+
+
+
+
+    def make_structure_dictionary_1(self):
+        # Want {j: (in_deg, out_deg, closeness_centrality(self.digraph)[j], betweenness_centrality(self.digraph)[j])}
+        return { j: (self.digraph.in_degree(j), self.digraph.out_degree(j), nx.closeness_centrality(self.digraph)[j], nx.betweenness_centrality(self.digraph)[j]) for j in range(self.N) }
+
+
+
+    def make_structure_activity_dictionary_1(self):
+        # Check that required data exists
+        if not self.executed:
+            print("Cannot make structure-activity dictionary 1 until experiment is executed.")
+            raise AssertionError
+
+        # Get the required data
+        influence_values = self.influence_values()
+        redundancy_values = self.redundancy_values()
+
+        return { j: ( self.digraph.in_degree(j), self.digraph.out_degree(j), nx.betweenness_centrality(self.digraph)[j], influence_values[j], redundancy_values[j]) for j in range(self.N) }
+
+
 
     def make_visitation_data(self):
         # Check that simulation was executed
@@ -572,6 +711,48 @@ class Experiment(object):
             out_file.write(st[:-2] + "\n")
 
         out_file.close()
+
+    def write_structure_activity_1_csv(self, out_name):
+        data = self.make_structure_activity_dictionary_1()
+
+        out_file = open(out_name, "w")
+
+        out_file.write("Node, InDeg, OutDeg, BetCent, Influence, Redundancy\n")
+
+        for key in data.keys():
+            st = str(key) + ", "
+            for i in range(5):
+                st += str(data[key][i]) + ", "
+            out_file.write(st[:-2] + "\n")
+        out_file.close()
+
+    def write_structure_1_csv(self, out_name):
+        data = self.make_structure_dictionary_1()
+
+        out_file = open(out_name, "w")
+
+        out_file.write("Node, InDeg, OutDeg, CloseCent, BetwnCent\n")
+
+        for j in range(self.N):
+            st = str(j) + ", "
+            for k in range(4):
+                st += str(data[j][k]) + ", "
+            out_file.write(st[:-2] + "\n")
+        out_file.close() 
+
+    def write_activity_1_csv(self, out_name, t_min=0):
+        a = self.influence_values(t_min)
+        b = self.redundancy_values(t_min)
+        c = self.age_at_death_values(t_min)
+
+        out_file = open(out_name, "w")
+
+        out_file.write("Node, Influence, Redundancy, AvgDeathAge\n")
+
+        for j in range(self.N):
+            out_file.write(str(j)+", "+str(a[j])+", "+str(b[j])+", "+str(c[j])+"\n")
+        out_file.close()
+
 
 
 
